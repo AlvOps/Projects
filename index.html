@@ -109,7 +109,7 @@
             <button id="addBtn">Añadir</button>
         </div>
 
-        <ul class="shopping-list" id="shoppingList">
+        <ul class="shopping-list" id="shoppingList" role="list">
             <!-- Los elementos se añadirán aquí dinámicamente -->
         </ul>
     </div>
@@ -119,57 +119,90 @@
         const addBtn = document.getElementById('addBtn');
         const shoppingList = document.getElementById('shoppingList');
 
-        // Función para añadir un nuevo elemento
+        // Load items from localStorage
+        function loadItems() {
+            const items = JSON.parse(localStorage.getItem('shoppingList')) || [];
+            shoppingList.innerHTML = '';
+            items.forEach(item => renderItem(item.text, item.completed));
+        }
+
+        // Save items to localStorage
+        function saveItems() {
+            const items = [];
+            shoppingList.querySelectorAll('.list-item').forEach(li => {
+                items.push({
+                    text: li.querySelector('.item-text').textContent,
+                    completed: li.classList.contains('completed')
+                });
+            });
+            localStorage.setItem('shoppingList', JSON.stringify(items));
+        }
+
+        // Render a single item
+        function renderItem(itemText, completed = false) {
+            const listItem = document.createElement('li');
+            listItem.className = 'list-item';
+            if (completed) listItem.classList.add('completed');
+
+            // Unique id for checkbox
+            const checkboxId = 'chk-' + Math.random().toString(36).slice(2, 11);
+
+            listItem.innerHTML = `
+                <input type="checkbox" id="${checkboxId}" ${completed ? 'checked' : ''} aria-label="Marcar como comprado">
+                <label for="${checkboxId}" class="item-text">${itemText}</label>
+                <button class="delete-btn" aria-label="Eliminar">Eliminar</button>
+            `;
+            shoppingList.appendChild(listItem);
+        }
+
+        // Prevent duplicate items in addItem()
         function addItem() {
             const itemText = newItemInput.value.trim();
             if (itemText === '') return;
-
-            const listItem = document.createElement('li');
-            listItem.className = 'list-item';
-
-            listItem.innerHTML = `
-                <input type="checkbox" onchange="toggleComplete(this)">
-                <span class="item-text">${itemText}</span>
-                <button class="delete-btn" onclick="deleteItem(this)">Eliminar</button>
-            `;
-
-            shoppingList.appendChild(listItem);
+            // Check for duplicates
+            const items = Array.from(shoppingList.querySelectorAll('.item-text')).map(label => label.textContent);
+            if (items.includes(itemText)) {
+                alert('Este producto ya está en la lista.');
+                return;
+            }
+            renderItem(itemText);
+            saveItems();
             newItemInput.value = '';
             newItemInput.focus();
         }
 
-        // Función para marcar/desmarcar como completado
-        function toggleComplete(checkbox) {
-            const listItem = checkbox.parentElement;
-            if (checkbox.checked) {
-                listItem.classList.add('completed');
-            } else {
-                listItem.classList.remove('completed');
-            }
-        }
-
-        // Función para eliminar un elemento
-        function deleteItem(button) {
-            const listItem = button.parentElement;
-            listItem.remove();
-        }
-
-        // Event listeners
-        addBtn.addEventListener('click', addItem);
-
-        newItemInput.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                addItem();
+        // Event delegation for list actions
+        shoppingList.addEventListener('click', function(e) {
+            if (e.target.matches('.delete-btn')) {
+                e.target.parentElement.remove();
+                saveItems();
             }
         });
 
-        // Añadir algunos elementos de ejemplo
-        newItemInput.value = 'Pan';
-        addItem();
-        newItemInput.value = 'Leche';
-        addItem();
-        newItemInput.value = 'Huevos';
-        addItem();
+        shoppingList.addEventListener('change', function(e) {
+            if (e.target.matches('input[type="checkbox"]')) {
+                const listItem = e.target.parentElement;
+                listItem.classList.toggle('completed', e.target.checked);
+                saveItems();
+            }
+        });
+
+        addBtn.addEventListener('click', addItem);
+
+        newItemInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') addItem();
+        });
+
+        // Add ARIA role for accessibility
+        shoppingList.setAttribute('role', 'list');
+
+        // Add example items only if localStorage is empty
+        if (!localStorage.getItem('shoppingList')) {
+            ['Pan', 'Leche', 'Huevos'].forEach(item => renderItem(item));
+            saveItems();
+        } else {
+            loadItems();
+        }
     </script>
 </body>
 </html>
