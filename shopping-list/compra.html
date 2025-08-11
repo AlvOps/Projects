@@ -169,7 +169,7 @@
 </style>
 </head>
 <body>
-    <div id="loginContainer" style="display: none;">
+    <div id="loginContainer" style="display: flex;">
         <div class="container">
             <h1>🔐 Login</h1>
             <div class="add-item">
@@ -180,7 +180,7 @@
             <div id="loginError" style="color: #ff4444; text-align: center; margin-top: 10px;"></div>
         </div>
     </div>
-    <div class="container">
+    <div class="container" style="display: none;">
         <div class="top-bar">
             <h1>🛒 Lista de la Compra</h1>
             <button id="darkModeBtn">🌙 Dark Mode</button>
@@ -380,13 +380,15 @@ document.addEventListener('DOMContentLoaded', () => {
     function checkLogin() {
         const currentUser = localStorage.getItem('currentUser');
         const sessionToken = localStorage.getItem('sessionToken');
+        const loginContainer = document.getElementById('loginContainer');
+        const appContainer = document.querySelector('.container');
         if (!currentUser || !sessionToken) {
             loginContainer.style.display = 'flex';
-            document.querySelector('.container').style.display = 'none';
+            appContainer.style.display = 'none';
             logoutBtn.remove();
         } else {
             loginContainer.style.display = 'none';
-            document.querySelector('.container').style.display = 'block';
+            appContainer.style.display = 'block';
             if (!document.querySelector('.top-bar').contains(logoutBtn)) {
                 document.querySelector('.top-bar').appendChild(logoutBtn);
             }
