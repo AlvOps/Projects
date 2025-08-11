@@ -4,110 +4,131 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>AlvOps website</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --primary: #222831;
-      --secondary: #393e46;
+      --primary: #1a1b1f;
+      --secondary: #2d2e32;
       --accent: #00adb5;
       --text: #eeeeee;
-      --nav-bg: #23272f;
+      --nav-bg: rgba(35, 39, 47, 0.8);
       --nav-hover: #00adb5;
-      --card-bg: #2c313a;
+      --card-bg: rgba(44, 49, 58, 0.9);
     }
 
-    /* MATRIX global style */
     body {
       background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
       color: var(--text);
-      font-family: 'Courier New', Courier, monospace;
+      font-family: 'Inter', sans-serif;
       margin: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
       overflow-x: hidden;
-      animation: glow 2s ease-in-out infinite alternate;
     }
 
-    @keyframes glow {
-      0% { text-shadow: 0 0 5px #00ff66; }
-      100% { text-shadow: 0 0 20px #00ff66, 0 0 10px #00ff66; }
+    /* Modern gradient background */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at top right, rgba(0,173,181,0.1), transparent 50%),
+                  radial-gradient(circle at bottom left, rgba(0,173,181,0.05), transparent 50%);
+      z-index: -1;
     }
 
     h1 {
       text-align: center;
-      font-size: 3em;
-      animation: flicker 3s infinite;
+      font-size: 3.5em;
       font-weight: 700;
-      letter-spacing: 2px;
-      color: var(--accent);
-      text-shadow: 0 2px 8px rgba(0,0,0,0.12);
-    }
-
-    @keyframes flicker {
-      0%, 19.999%, 22%, 62.999%, 64%, 100% {
-        opacity: 1;
-      }
-      20%, 21.999%, 63%, 63.999% {
-        opacity: 0.3;
-      }
-    }
-
-    p {
-      text-align: center;
-      font-size: 1.2em;
-      margin: 32px 0 0 0;
+      letter-spacing: -1px;
       color: var(--text);
-      opacity: 0.85;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.12);
+      margin: 2rem 0;
+      background: linear-gradient(45deg, var(--text), var(--accent));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      transition: transform 0.3s ease;
+    }
+
+    h1:hover {
+      transform: scale(1.02);
     }
 
     nav {
-      margin: 32px 0 0 0;
-      display: flex;
-      justify-content: center;
-      gap: 32px;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
       background: var(--nav-bg);
       border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.10);
-      padding: 16px 32px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.1);
+      padding: 1rem 2rem;
+      display: flex;
+      gap: 2rem;
+      margin: 1rem 0 2rem 0;
     }
 
     nav a {
       color: var(--text);
       text-decoration: none;
-      font-size: 1.15rem;
-      font-weight: 500;
-      letter-spacing: 1px;
-      padding: 8px 16px;
-      border-radius: 6px;
-      transition: background 0.2s, color 0.2s, transform 0.2s;
+      font-size: 1.1rem;
+      font-weight: 600;
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+      border: 1px solid transparent;
     }
 
     nav a:hover, nav a:focus {
       background: var(--accent);
       color: var(--primary);
-      transform: translateY(-2px) scale(1.08);
-      outline: none;
+      transform: translateY(-2px);
+      border-color: rgba(255,255,255,0.1);
     }
 
     .card {
       background: var(--card-bg);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
       border-radius: 16px;
-      box-shadow: 0 4px 24px rgba(0,0,0,0.12);
-      padding: 32px;
-      margin: 48px 0 0 0;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+      padding: 2.5rem;
       max-width: 480px;
-      width: 100%;
-      text-align: center;
+      width: 90%;
+      border: 1px solid rgba(255,255,255,0.1);
+      transition: transform 0.3s ease;
     }
 
-    canvas {
-      position: fixed;
-      top: 0;
-      left: 0;
-      z-index: -1;
+    .card:hover {
+      transform: translateY(-5px);
+    }
+
+    p {
+      text-align: center;
+      font-size: 1.2rem;
+      line-height: 1.6;
+      margin: 0;
+      color: var(--text);
+      opacity: 0.9;
     }
 
     @media (max-width: 600px) {
-      h1 { font-size: 2rem; }
-      nav { flex-direction: column; gap: 16px; padding: 12px 8px; }
-      .card { padding: 20px; margin-top: 24px; }
+      h1 { font-size: 2.5rem; }
+      nav { 
+        flex-direction: column; 
+        gap: 0.5rem; 
+        padding: 1rem; 
+        width: 80%;
+      }
+      .card { 
+        padding: 1.5rem;
+        margin: 1rem;
+      }
     }
   </style>
 </head>
@@ -124,48 +145,5 @@
     <p>Welcome to AlvOps<br>
     Explore the site using the navigation above.</p>
   </div>
-
-  <canvas id="matrix"></canvas>
-
-  <script>
-    // MATRIX background animation
-    const canvas = document.getElementById('matrix');
-    const ctx = canvas.getContext('2d');
-
-    canvas.height = window.innerHeight;
-    canvas.width = window.innerWidth;
-
-    const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789@#$%^&*()*&^%';
-    const fontSize = 14;
-    const columns = canvas.width / fontSize;
-
-    const drops = Array(Math.floor(columns)).fill(1);
-
-    function draw() {
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-      ctx.fillStyle = '#0f0';
-      ctx.font = fontSize + 'px monospace';
-
-      for (let i = 0; i < drops.length; i++) {
-        const text = letters.charAt(Math.floor(Math.random() * letters.length));
-        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-
-        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
-          drops[i] = 0;
-        }
-        drops[i]++;
-      }
-    }
-
-    setInterval(draw, 35);
-
-    // Resize canvas when window size changes
-    window.addEventListener('resize', () => {
-      canvas.height = window.innerHeight;
-      canvas.width = window.innerWidth;
-    });
-  </script>
 </body>
 </html>
