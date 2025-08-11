@@ -1,17 +1,123 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Mi Página Principal</title>
+  <title>Welcome to My Matrix Site 💻🟩</title>
+  <style>
+    /* MATRIX global style */
+    body {
+      background-color: black;
+      color: #00ff66;
+      font-family: 'Courier New', Courier, monospace;
+      margin: 0;
+      overflow-x: hidden;
+      animation: glow 2s ease-in-out infinite alternate;
+    }
+
+    @keyframes glow {
+      0% { text-shadow: 0 0 5px #00ff66; }
+      100% { text-shadow: 0 0 20px #00ff66, 0 0 10px #00ff66; }
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 3em;
+      animation: flicker 3s infinite;
+    }
+
+    @keyframes flicker {
+      0%, 19.999%, 22%, 62.999%, 64%, 100% {
+        opacity: 1;
+      }
+      20%, 21.999%, 63%, 63.999% {
+        opacity: 0.3;
+      }
+    }
+
+    p {
+      text-align: center;
+      font-size: 1.2em;
+    }
+
+    nav {
+      text-align: center;
+      margin-top: 30px;
+    }
+
+    nav a {
+      color: #00ff66;
+      text-decoration: none;
+      margin: 0 10px;
+      font-size: 1.5em;
+      transition: 0.3s;
+    }
+
+    nav a:hover {
+      color: #fff;
+      text-shadow: 0 0 10px #00ff66;
+      transform: scale(1.2) rotate(-5deg);
+    }
+
+    /* Matrix falling code animation */
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: -1;
+    }
+  </style>
 </head>
 <body>
-  <h1>Bienvenido a mi sitio</h1>
-  <p>Esta es la página principal.</p>
-  <nav aria-label="Navegación principal">
-    <a href="index.html">Inicio</a> |
-    <a href="about.html">Acerca de</a> |
-    <a href="compra.html">Lista de la compra</a>
+  <h1>💻 Welcome to the Matrix 🟩</h1>
+  <p>This is the main page. Navigate below 🌐👇</p>
+  <nav aria-label="Main navigation">
+    <a href="index.html">🏠 Home</a> |
+    <a href="about.html">ℹ️ About</a> |
+    <a href="compra.html">🛒 Shopping List</a>
   </nav>
+
+  <canvas id="matrix"></canvas>
+
+  <script>
+    // MATRIX background animation
+    const canvas = document.getElementById('matrix');
+    const ctx = canvas.getContext('2d');
+
+    canvas.height = window.innerHeight;
+    canvas.width = window.innerWidth;
+
+    const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ123456789@#$%^&*()*&^%';
+    const fontSize = 14;
+    const columns = canvas.width / fontSize;
+
+    const drops = Array(Math.floor(columns)).fill(1);
+
+    function draw() {
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      ctx.fillStyle = '#0f0';
+      ctx.font = fontSize + 'px monospace';
+
+      for (let i = 0; i < drops.length; i++) {
+        const text = letters.charAt(Math.floor(Math.random() * letters.length));
+        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+          drops[i] = 0;
+        }
+        drops[i]++;
+      }
+    }
+
+    setInterval(draw, 35);
+
+    // Resize canvas when window size changes
+    window.addEventListener('resize', () => {
+      canvas.height = window.innerHeight;
+      canvas.width = window.innerWidth;
+    });
+  </script>
 </body>
 </html>
