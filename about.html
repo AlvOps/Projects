@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>About me</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <title>About | AlvOps</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
       --primary: #1a1b1f;
@@ -19,7 +19,7 @@
     body {
       background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
       color: var(--text);
-      font-family: 'Inter', sans-serif;
+      font-family: 'Poppins', sans-serif;
       margin: 0;
       min-height: 100vh;
       display: flex;
@@ -105,32 +105,63 @@
       margin-bottom: 2rem;
     }
 
-    .profile-pic {
-      width: 150px;
-      height: 150px;
+    .avatar {
+      width: 180px;
+      height: 180px;
       border-radius: 50%;
-      border: 3px solid var(--accent);
-      margin-bottom: 1rem;
+      border: 4px solid var(--accent);
+      margin-bottom: 1.5rem;
+      box-shadow: 0 0 20px rgba(16, 185, 129, 0.2);
+      transition: transform 0.3s ease;
+      object-fit: cover;
+    }
+
+    .avatar:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 30px rgba(16, 185, 129, 0.3);
     }
 
     .social-links {
       display: flex;
       justify-content: center;
       gap: 1rem;
-      margin: 1rem 0;
+      margin: 1.5rem 0;
+      flex-wrap: wrap;
     }
 
     .social-links a {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
       color: var(--text);
       text-decoration: none;
-      padding: 0.5rem 1rem;
-      border-radius: 6px;
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.1);
       transition: all 0.3s ease;
+      border: 1px solid rgba(255, 255, 255, 0.05);
     }
 
     .social-links a:hover {
       background: var(--accent);
-      color: var(--primary);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+    }
+
+    .skills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      justify-content: center;
+      margin: 1.5rem 0;
+    }
+
+    .skill-tag {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      border: 1px solid rgba(255, 255, 255, 0.05);
     }
 
     p {
@@ -160,29 +191,33 @@
     </nav>
   </header>
 
-  <div class="card">
-    <div class="profile-section">
-      <img src="https://github.com/alvops.png" alt="Profile Picture" class="profile-pic">
-      <h2>AlvOps</h2>
-      <div class="social-links">
-        <a href="https://github.com/alvops" target="_blank">📦 GitHub</a>
-        <a href="https://www.linkedin.com/in/alvaro-ga/" target="_blank">💼 LinkedIn</a>
+  <main>
+    <div class="card">
+      <div class="profile-section">
+        <img src="https://github.com/alvops.png" alt="Profile Picture" class="avatar">
+        <h2>AlvOps</h2>
+        <div class="social-links">
+          <a href="https://github.com/alvops" target="_blank" rel="noopener">
+            <span>📦 GitHub</span>
+          </a>
+          <a href="https://www.linkedin.com/in/alvaro-ga/" target="_blank" rel="noopener">
+            <span>💼 LinkedIn</span>
+          </a>
+        </div>
+        <div class="skills">
+          <span class="skill-tag">Web Development</span>
+          <span class="skill-tag">Automation</span>
+          <span class="skill-tag">DevOps</span>
+          <span class="skill-tag">Cloud Computing</span>
+        </div>
       </div>
+      <p>
+        🇬🇧
+        I am Alvaro “Alvarito” Gutiérrez, an IT Specialist with solid expertise in Linux systems administration, particularly in enterprise environments running SUSE Linux Enterprise and Red Hat. I work at a space agency, where precision, reliability, and security are essential. My professional approach combines deep technical knowledge with a problem-solving mindset, ensuring that complex systems run smoothly and efficiently.
+
+        Beyond my technical role, I am passionate about automation, cybersecurity, and optimizing workflows to save time and resources. I enjoy experimenting with tools like Docker, automation frameworks, and AI-powered assistants to create practical, real-world solutions.
+      </p>
     </div>
-
-    <p>
-      🇬🇧
-      I am Alvaro “Alvarito” Gutiérrez, an IT Specialist with solid expertise in Linux systems administration, particularly in enterprise environments running SUSE Linux Enterprise and Red Hat. I work at a space agency, where precision, reliability, and security are essential. My professional approach combines deep technical knowledge with a problem-solving mindset, ensuring that complex systems run smoothly and efficiently.
-
-Beyond my technical role, I am passionate about automation, cybersecurity, and optimizing workflows to save time and resources. I enjoy experimenting with tools like Docker, automation frameworks, and AI-powered assistants to create practical, real-world solutions.
-    </p>
-    
-    <p>
-      🇪🇸
-      Soy Álvaro “Alvarito” Gutiérrez, especialista en TI con amplia experiencia en administración de sistemas Linux, especialmente en entornos empresariales con SUSE Linux Enterprise y Red Hat. Trabajo en una agencia espacial, donde la precisión, la fiabilidad y la seguridad son fundamentales. Mi enfoque profesional combina un sólido conocimiento técnico con una mentalidad resolutiva, garantizando que sistemas complejos funcionen de forma estable y eficiente.
-
-Más allá de lo técnico, me apasiona la automatización, la ciberseguridad y la optimización de flujos de trabajo para ahorrar tiempo y recursos. Disfruto experimentando con herramientas como Docker, frameworks de automatización y asistentes con inteligencia artificial para crear soluciones prácticas y reales.
-    </p>
-  </div>
+  </main>
 </body>
 </html>
