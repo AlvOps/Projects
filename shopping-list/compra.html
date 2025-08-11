@@ -10,7 +10,7 @@
         --container-bg: #fff;
         --text-color: #333;
         --item-bg: #f9f9f9;
-        --completed-bg: #e8e8e8;
+        --completed-bg: #333;
         --border-color: #ddd;
     }
     body.dark-mode {
@@ -194,23 +194,25 @@
     </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', () => {
-    // Hash function (SHA-256)
-    async function hashPassword(password) {
-        const encoder = new TextEncoder();
-        const data = encoder.encode(password);
-        const hash = await crypto.subtle.digest('SHA-256', data);
-        return Array.from(new Uint8Array(hash))
-            .map(b => b.toString(16).padStart(2, '0'))
-            .join('');
+// Simple hash function for demo (not secure, but works everywhere)
+function simpleHash(str) {
+    let hash = 0, i, chr;
+    if (str.length === 0) return hash.toString();
+    for (i = 0; i < str.length; i++) {
+        chr   = str.charCodeAt(i);
+        hash  = ((hash << 5) - hash) + chr;
+        hash |= 0;
     }
+    return hash.toString();
+}
 
-    // Store hashed passwords instead of plain text
-    const validUsers = {
-        'PUUR3': '6c97439615f1800ab91d5d760ca359719f990724fa82b35ea24435c4259161f2', // 130692
-        'Beatrixarias': '8a9bcf1e51e812d0af8465a8dbcc9f741064bf0af3b3d08e6b0246437c19f7aa' // Fullmoon26
-    };
+// Store "hashed" passwords
+const validUsers = {
+    'PUUR3': simpleHash('130692'),
+    'Beatrixarias': simpleHash('Fullmoon26')
+};
 
+document.addEventListener('DOMContentLoaded', () => {
     const newItemInput = document.getElementById('newItem');
     const addBtn = document.getElementById('addBtn');
     const shoppingList = document.getElementById('shoppingList');
@@ -392,17 +394,15 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    loginBtn.addEventListener('click', async () => {
+    loginBtn.addEventListener('click', () => {
         const user = username.value;
-        const pass = await hashPassword(password.value);
+        const pass = simpleHash(password.value);
 
         if (validUsers[user] === pass) {
-            // Generate a session token
-            const sessionToken = crypto.randomUUID();
-            // Store session info
+            // Generate a session token (fallback for demo)
+            const sessionToken = 'token-' + Math.random().toString(36).substr(2, 9);
             localStorage.setItem('sessionToken', sessionToken);
             localStorage.setItem('currentUser', user);
-            // Hide login, show app
             checkLogin();
         } else {
             loginError.textContent = 'You have no access.';
