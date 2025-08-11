@@ -129,9 +129,57 @@
     font-size: 12px;
     margin-top: 5px;
 }
+#loginContainer {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: var(--bg-color);
+        z-index: 1000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    #loginContainer .container {
+        max-width: 400px;
+        width: 90%;
+    }
+    
+    #username, #password {
+        padding: 10px;
+        margin: 5px;
+        border: 2px solid var(--border-color);
+        border-radius: 5px;
+        font-size: 16px;
+        background-color: var(--item-bg);
+        color: var(--text-color);
+    }
+    
+    #loginBtn {
+        padding: 10px 20px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+    }
 </style>
 </head>
 <body>
+    <div id="loginContainer" style="display: none;">
+        <div class="container">
+            <h1>🔐 Login</h1>
+            <div class="add-item">
+                <input type="text" id="username" placeholder="Username" autocomplete="off" />
+                <input type="password" id="password" placeholder="Password" />
+                <button id="loginBtn">Login</button>
+            </div>
+            <div id="loginError" style="color: #ff4444; text-align: center; margin-top: 10px;"></div>
+        </div>
+    </div>
     <div class="container">
         <div class="top-bar">
             <h1>🛒 Lista de la Compra</h1>
@@ -146,6 +194,22 @@
     </div>
 
 <script>
+// Hash function (SHA-256)
+async function hashPassword(password) {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(password);
+    const hash = await crypto.subtle.digest('SHA-256', data);
+    return Array.from(new Uint8Array(hash))
+        .map(b => b.toString(16).padStart(2, '0'))
+        .join('');
+}
+
+// Store hashed passwords instead of plain text
+const validUsers = {
+    'PUUR3': '6c97439615f1800ab91d5d760ca359719f990724fa82b35ea24435c4259161f2', // 130692
+    'Beatrixarias': '8a9bcf1e51e812d0af8465a8dbcc9f741064bf0af3b3d08e6b0246437c19f7aa' // Fullmoon26
+};
+
     const newItemInput = document.getElementById('newItem');
     const addBtn = document.getElementById('addBtn');
     const shoppingList = document.getElementById('shoppingList');
@@ -166,12 +230,14 @@
 
     // Load shopping list from localStorage
     function loadList() {
-        const items = JSON.parse(localStorage.getItem('shoppingList') || '[]');
+        const currentUser = localStorage.getItem('currentUser');
+        const items = JSON.parse(localStorage.getItem(`shoppingList_${currentUser}`) || '[]');
         items.forEach(item => shoppingList.appendChild(createListItem(item.text, item.completed)));
     }
 
     // Save shopping list to localStorage
     function saveList() {
+        const currentUser = localStorage.getItem('currentUser');
         const items = [];
         shoppingList.querySelectorAll('.list-item').forEach(li => {
             items.push({
@@ -179,7 +245,7 @@
                 completed: li.classList.contains('completed')
             });
         });
-        localStorage.setItem('shoppingList', JSON.stringify(items));
+        localStorage.setItem(`shoppingList_${currentUser}`, JSON.stringify(items));
     }
 
     function createListItem(text, completed = false) {
@@ -290,6 +356,64 @@
             addItem();
         }
     });
+
+    // Add login functionality
+    const loginContainer = document.getElementById('loginContainer');
+    const loginBtn = document.getElementById('loginBtn');
+    const username = document.getElementById('username');
+    const password = document.getElementById('password');
+    const loginError = document.getElementById('loginError');
+
+
+    function checkLogin() {
+        const currentUser = localStorage.getItem('currentUser');
+        const sessionToken = localStorage.getItem('sessionToken');
+        
+        if (!currentUser || !sessionToken) {
+            loginContainer.style.display = 'flex';
+            document.querySelector('.container').style.display = 'none';
+        } else {
+            loginContainer.style.display = 'none';
+            document.querySelector('.container').style.display = 'block';
+        }
+    }
+
+    loginBtn.addEventListener('click', async () => {
+        const user = username.value;
+        const pass = await hashPassword(password.value);
+
+        if (validUsers[user] === pass) {
+            // Generate a session token
+            const sessionToken = crypto.randomUUID();
+            // Store session info
+            localStorage.setItem('sessionToken', sessionToken);
+            localStorage.setItem('currentUser', user);
+            // Hide login, show app
+            loginContainer.style.display = 'none';
+            document.querySelector('.container').style.display = 'block';
+            loadList();
+        } else {
+            loginError.textContent = 'You have no access.';
+            setTimeout(() => {
+                loginError.textContent = '';
+            }, 2000);
+        }
+    });
+
+    // Add logout functionality
+    const logoutBtn = document.createElement('button');
+    logoutBtn.textContent = '🚪 Logout';
+    logoutBtn.style.marginLeft = '10px';
+    logoutBtn.onclick = () => {
+        localStorage.removeItem('currentUser');
+        localStorage.removeItem('sessionToken');
+        shoppingList.innerHTML = '';
+        checkLogin();
+    };
+    document.querySelector('.top-bar').appendChild(logoutBtn);
+
+    // Check login status on page load
+    checkLogin();
 
     // Initial load
     if (!localStorage.getItem('shoppingList')) {
