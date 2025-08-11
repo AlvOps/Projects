@@ -194,26 +194,36 @@
     </div>
 
 <script>
-// Hash function (SHA-256)
-async function hashPassword(password) {
-    const encoder = new TextEncoder();
-    const data = encoder.encode(password);
-    const hash = await crypto.subtle.digest('SHA-256', data);
-    return Array.from(new Uint8Array(hash))
-        .map(b => b.toString(16).padStart(2, '0'))
-        .join('');
-}
+document.addEventListener('DOMContentLoaded', () => {
+    // Hash function (SHA-256)
+    async function hashPassword(password) {
+        const encoder = new TextEncoder();
+        const data = encoder.encode(password);
+        const hash = await crypto.subtle.digest('SHA-256', data);
+        return Array.from(new Uint8Array(hash))
+            .map(b => b.toString(16).padStart(2, '0'))
+            .join('');
+    }
 
-// Store hashed passwords instead of plain text
-const validUsers = {
-    'PUUR3': '6c97439615f1800ab91d5d760ca359719f990724fa82b35ea24435c4259161f2', // 130692
-    'Beatrixarias': '8a9bcf1e51e812d0af8465a8dbcc9f741064bf0af3b3d08e6b0246437c19f7aa' // Fullmoon26
-};
+    // Store hashed passwords instead of plain text
+    const validUsers = {
+        'PUUR3': '6c97439615f1800ab91d5d760ca359719f990724fa82b35ea24435c4259161f2', // 130692
+        'Beatrixarias': '8a9bcf1e51e812d0af8465a8dbcc9f741064bf0af3b3d08e6b0246437c19f7aa' // Fullmoon26
+    };
 
     const newItemInput = document.getElementById('newItem');
     const addBtn = document.getElementById('addBtn');
     const shoppingList = document.getElementById('shoppingList');
     const darkModeBtn = document.getElementById('darkModeBtn');
+    const logoutBtn = document.createElement('button');
+    logoutBtn.textContent = '🚪 Logout';
+    logoutBtn.style.marginLeft = '10px';
+    logoutBtn.onclick = () => {
+        localStorage.removeItem('currentUser');
+        localStorage.removeItem('sessionToken');
+        shoppingList.innerHTML = '';
+        checkLogin();
+    };
 
     // 🌓 Load dark mode preference
     if(localStorage.getItem('darkMode') === 'true') {
@@ -230,6 +240,7 @@ const validUsers = {
 
     // Load shopping list from localStorage
     function loadList() {
+        shoppingList.innerHTML = '';
         const currentUser = localStorage.getItem('currentUser');
         const items = JSON.parse(localStorage.getItem(`shoppingList_${currentUser}`) || '[]');
         items.forEach(item => shoppingList.appendChild(createListItem(item.text, item.completed)));
@@ -308,7 +319,7 @@ const validUsers = {
                     saveList();
                 }
             }
-        }); // <-- aquí
+        });
 
         const deleteBtn = document.createElement('button');
         deleteBtn.className = 'delete-btn';
@@ -364,17 +375,20 @@ const validUsers = {
     const password = document.getElementById('password');
     const loginError = document.getElementById('loginError');
 
-
     function checkLogin() {
         const currentUser = localStorage.getItem('currentUser');
         const sessionToken = localStorage.getItem('sessionToken');
-        
         if (!currentUser || !sessionToken) {
             loginContainer.style.display = 'flex';
             document.querySelector('.container').style.display = 'none';
+            logoutBtn.remove();
         } else {
             loginContainer.style.display = 'none';
             document.querySelector('.container').style.display = 'block';
+            if (!document.querySelector('.top-bar').contains(logoutBtn)) {
+                document.querySelector('.top-bar').appendChild(logoutBtn);
+            }
+            loadList();
         }
     }
 
@@ -389,9 +403,7 @@ const validUsers = {
             localStorage.setItem('sessionToken', sessionToken);
             localStorage.setItem('currentUser', user);
             // Hide login, show app
-            loginContainer.style.display = 'none';
-            document.querySelector('.container').style.display = 'block';
-            loadList();
+            checkLogin();
         } else {
             loginError.textContent = 'You have no access.';
             setTimeout(() => {
@@ -400,29 +412,18 @@ const validUsers = {
         }
     });
 
-    // Add logout functionality
-    const logoutBtn = document.createElement('button');
-    logoutBtn.textContent = '🚪 Logout';
-    logoutBtn.style.marginLeft = '10px';
-    logoutBtn.onclick = () => {
-        localStorage.removeItem('currentUser');
-        localStorage.removeItem('sessionToken');
-        shoppingList.innerHTML = '';
-        checkLogin();
-    };
-    document.querySelector('.top-bar').appendChild(logoutBtn);
-
     // Check login status on page load
     checkLogin();
 
-    // Initial load
-    if (!localStorage.getItem('shoppingList')) {
-        // Add demo items only if no list exists
+    // Initial load (demo items only if no user list exists)
+    const currentUser = localStorage.getItem('currentUser');
+    if (currentUser && !localStorage.getItem(`shoppingList_${currentUser}`)) {
         ['Pan', 'Leche', 'Huevos'].forEach(item => shoppingList.appendChild(createListItem(item)));
         saveList();
-    } else {
+    } else if (currentUser) {
         loadList();
     }
+});
 </script>
 </body>
 </html>
