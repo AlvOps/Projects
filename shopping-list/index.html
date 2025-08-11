@@ -3,12 +3,22 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Welcome to My Matrix Site 💻🟩</title>
+  <title>AlvOps website</title>
   <style>
+    :root {
+      --primary: #222831;
+      --secondary: #393e46;
+      --accent: #00adb5;
+      --text: #eeeeee;
+      --nav-bg: #23272f;
+      --nav-hover: #00adb5;
+      --card-bg: #2c313a;
+    }
+
     /* MATRIX global style */
     body {
-      background-color: black;
-      color: #00ff66;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      color: var(--text);
       font-family: 'Courier New', Courier, monospace;
       margin: 0;
       overflow-x: hidden;
@@ -24,6 +34,10 @@
       text-align: center;
       font-size: 3em;
       animation: flicker 3s infinite;
+      font-weight: 700;
+      letter-spacing: 2px;
+      color: var(--accent);
+      text-shadow: 0 2px 8px rgba(0,0,0,0.12);
     }
 
     @keyframes flicker {
@@ -38,44 +52,78 @@
     p {
       text-align: center;
       font-size: 1.2em;
+      margin: 32px 0 0 0;
+      color: var(--text);
+      opacity: 0.85;
     }
 
     nav {
-      text-align: center;
-      margin-top: 30px;
+      margin: 32px 0 0 0;
+      display: flex;
+      justify-content: center;
+      gap: 32px;
+      background: var(--nav-bg);
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+      padding: 16px 32px;
     }
 
     nav a {
-      color: #00ff66;
+      color: var(--text);
       text-decoration: none;
-      margin: 0 10px;
-      font-size: 1.5em;
-      transition: 0.3s;
+      font-size: 1.15rem;
+      font-weight: 500;
+      letter-spacing: 1px;
+      padding: 8px 16px;
+      border-radius: 6px;
+      transition: background 0.2s, color 0.2s, transform 0.2s;
     }
 
-    nav a:hover {
-      color: #fff;
-      text-shadow: 0 0 10px #00ff66;
-      transform: scale(1.2) rotate(-5deg);
+    nav a:hover, nav a:focus {
+      background: var(--accent);
+      color: var(--primary);
+      transform: translateY(-2px) scale(1.08);
+      outline: none;
     }
 
-    /* Matrix falling code animation */
+    .card {
+      background: var(--card-bg);
+      border-radius: 16px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.12);
+      padding: 32px;
+      margin: 48px 0 0 0;
+      max-width: 480px;
+      width: 100%;
+      text-align: center;
+    }
+
     canvas {
       position: fixed;
       top: 0;
       left: 0;
       z-index: -1;
     }
+
+    @media (max-width: 600px) {
+      h1 { font-size: 2rem; }
+      nav { flex-direction: column; gap: 16px; padding: 12px 8px; }
+      .card { padding: 20px; margin-top: 24px; }
+    }
   </style>
 </head>
 <body>
-  <h1>💻 Welcome to the Matrix 🟩</h1>
-  <p>This is the main page. Navigate below 🌐👇</p>
-  <nav aria-label="Main navigation">
-    <a href="index.html">🏠 Home</a> |
-    <a href="about.html">ℹ️ About</a> |
-    <a href="compra.html">🛒 Shopping List</a>
-  </nav>
+  <header>
+    <h1>AlvOps website</h1>
+    <nav aria-label="Main navigation">
+      <a href="index.html">🏠 Home</a>
+      <a href="about.html">ℹ️ About</a>
+      <a href="compra.html">🛒 Shopping List</a>
+    </nav>
+  </header>
+  <div class="card">
+    <p>Welcome to AlvOps<br>
+    Explore the site using the navigation above.</p>
+  </div>
 
   <canvas id="matrix"></canvas>
 
