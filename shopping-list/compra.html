@@ -171,17 +171,58 @@
         cursor: pointer;
         font-size: 16px;
     }
+    .login-box {
+    max-width: 400px;
+    width: 90vw;
+    background: var(--container-bg);
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    padding: 24px 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+}
+.login-form input {
+    font-size: 18px;
+    padding: 12px;
+    border-radius: 6px;
+    border: 2px solid var(--border-color);
+    background: var(--item-bg);
+    color: var(--text-color);
+    margin: 0;
+}
+.login-form button {
+    font-size: 18px;
+    padding: 12px;
+    border-radius: 6px;
+    border: none;
+    background: #4CAF50;
+    color: white;
+    cursor: pointer;
+    margin-top: 8px;
+}
+@media (max-width: 500px) {
+    .login-box {
+        max-width: 98vw;
+        padding: 16px 4vw;
+    }
+    .login-form input,
+    .login-form button {
+        font-size: 16px;
+        padding: 10px;
+    }
+}
 </style>
 </head>
 <body>
     <div id="loginContainer" style="display: flex;">
         <div class="login-box">
             <h1>🔐 Login</h1>
-            <div class="add-item">
-                <input type="text" id="username" placeholder="Username" autocomplete="off" />
-                <input type="password" id="password" placeholder="Password" />
-                <button id="loginBtn">Login</button>
-            </div>
+            <form class="login-form" style="display: flex; flex-direction: column; gap: 12px;">
+                <input type="text" id="username" placeholder="Username" autocomplete="off" style="width: 100%;" />
+                <input type="password" id="password" placeholder="Password" style="width: 100%;" />
+                <button id="loginBtn" type="button" style="width: 100%;">Login</button>
+            </form>
             <div id="loginError" style="color: #ff4444; text-align: center; margin-top: 10px;"></div>
         </div>
     </div>
