@@ -194,23 +194,23 @@
     </div>
 
 <script>
-// Simple hash function for demo (not secure, but works everywhere)
-function simpleHash(str) {
-    let hash = 0, i, chr;
-    if (str.length === 0) return hash.toString();
-    for (i = 0; i < str.length; i++) {
-        chr   = str.charCodeAt(i);
-        hash  = ((hash << 5) - hash) + chr;
-        hash |= 0;
-    }
-    return hash.toString();
-}
+// Salt for obfuscation
+const SALT = "x7$!";
 
-// Store "hashed" passwords
+// Store salted hashes for each user
 const validUsers = {
-    'PUUR3': simpleHash('130692'),
-    'Beatrixarias': simpleHash('Fullmoon26')
+    'PUUR3': 'f8abc1',         // hashed pass
+    'Beatrixarias': '7106c3c1' // hashed pass
 };
+
+// Simple hash function (for demo, not secure)
+function simpleHash(str) {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+        hash = (hash << 2) ^ str.charCodeAt(i);
+    }
+    return Math.abs(hash).toString(16);
+}
 
 document.addEventListener('DOMContentLoaded', () => {
     const newItemInput = document.getElementById('newItem');
@@ -396,9 +396,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     loginBtn.addEventListener('click', () => {
         const user = username.value;
-        const pass = simpleHash(password.value);
+        const pass = password.value;
+        const hash = simpleHash(pass + SALT);
 
-        if (validUsers[user] === pass) {
+        if (validUsers[user] === hash) {
             // Generate a session token (fallback for demo)
             const sessionToken = 'token-' + Math.random().toString(36).substr(2, 9);
             localStorage.setItem('sessionToken', sessionToken);
