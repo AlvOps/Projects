@@ -3,145 +3,494 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>AlvOps</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-  <!-- RuneScape font -->
+  <title>AlvOps - Operations Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
   <link href="https://fonts.cdnfonts.com/css/runescape-uf" rel="stylesheet">
   <style>
     :root {
-        --bg-color: #f5f5f5;
-        --container-bg: #fff;
-        --text-color: #333;
-        --item-bg: #f9f9f9;
-        --completed-bg: #e8e8e8;
-        --border-color: #ddd;
+        --primary-color: #6366f1;
+        --secondary-color: #8b5cf6;
+        --accent-color: #f59e0b;
+        --success-color: #10b981;
+        --bg-color: #0f0f23;
+        --container-bg: rgba(17, 24, 39, 0.8);
+        --text-color: #f8fafc;
+        --item-bg: rgba(30, 41, 59, 0.6);
+        --completed-bg: rgba(75, 85, 99, 0.4);
+        --border-color: rgba(148, 163, 184, 0.2);
+        --glow-color: #6366f1;
     }
 
-    body.dark-mode {
-        --bg-color: #121212;
-        --container-bg: #1e1e1e;
-        --text-color: #f5f5f5;
-        --item-bg: #2a2a2a;
-        --completed-bg: #333;
-        --border-color: #444;
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
     }
 
     body {
         font-family: 'Poppins', sans-serif;
-        max-width: 800px;
-        margin: 20px auto;
-        padding: 20px;
-        background-color: var(--bg-color);
+        background: var(--bg-color);
         color: var(--text-color);
-        transition: background-color 0.3s, color 0.3s;
+        overflow-x: hidden;
+        min-height: 100vh;
     }
 
-    .container {
-        background-color: var(--container-bg);
+    /* Animated Background */
+    #particles-canvas {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+        background: linear-gradient(45deg, #0f0f23, #1a1a3e);
+    }
+
+    .main-container {
+        position: relative;
+        max-width: 1200px;
+        margin: 0 auto;
         padding: 20px;
-        border-radius: 10px;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        transition: background-color 0.3s;
+        min-height: 100vh;
+        backdrop-filter: blur(10px);
+    }
+
+    .header {
+        text-align: center;
+        margin-bottom: 3rem;
+        padding: 2rem 0;
     }
 
     h1 {
         font-family: 'RuneScape UF', sans-serif;
-        text-align: center;
-        color: #ffff00;
-        text-shadow: 2px 2px 0 #000,
-                     -2px 2px 0 #000,
-                     2px -2px 0 #000,
-                     -2px -2px 0 #000;
-        font-size: 3.5rem;
-        letter-spacing: 2px;
-        margin-bottom: 1.5rem;
+        font-size: 4rem;
+        background: linear-gradient(45deg, #ffd700, #ffed4e, #ffd700);
+        background-size: 200% 200%;
+        animation: gradientShift 3s ease infinite;
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+        letter-spacing: 3px;
+        margin-bottom: 1rem;
     }
 
-    nav {
-        display: flex;
-        justify-content: center;
-        gap: 1rem;
-        margin: 1.5rem 0;
+    .subtitle {
+        font-size: 1.2rem;
+        color: rgba(248, 250, 252, 0.7);
+        font-weight: 300;
     }
 
-    nav a {
-        font-family: 'RuneScape UF', sans-serif;
-        color: #ffff00;
-        text-decoration: none;
-        padding: 0.75rem 1.5rem;
-        background-color: var(--item-bg);
-        border-radius: 5px;
-        border: 2px solid var(--border-color);
-        transition: all 0.3s ease;
-        text-shadow: 1px 1px 0 #000;
+    @keyframes gradientShift {
+        0%, 100% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
     }
 
-    nav a:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-        background-color: var(--completed-bg);
+    /* Navigation Grid */
+    .nav-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 2rem;
+        margin-bottom: 3rem;
     }
 
-    #darkModeBtn {
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        padding: 10px 20px;
-        background-color: #555;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-    }
-
-    #darkModeBtn:hover {
-        background-color: #333;
-    }
-
-    .card {
-        background-color: var(--container-bg);
-        padding: 20px;
-        border-radius: 10px;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        margin: 20px 0;
+    .nav-category {
+        background: var(--container-bg);
+        border-radius: 20px;
+        padding: 2rem;
         border: 1px solid var(--border-color);
+        backdrop-filter: blur(20px);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
     }
 
+    .nav-category:hover {
+        transform: translateY(-10px) scale(1.02);
+        box-shadow: 0 20px 60px rgba(99, 102, 241, 0.3);
+        border-color: var(--primary-color);
+    }
+
+    .nav-category::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, var(--primary-color), var(--secondary-color), var(--accent-color));
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .nav-category:hover::before {
+        opacity: 1;
+    }
+
+    .category-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+        color: var(--accent-color);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .category-links {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .nav-link {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem 1.5rem;
+        background: var(--item-bg);
+        border-radius: 12px;
+        text-decoration: none;
+        color: var(--text-color);
+        transition: all 0.3s ease;
+        border: 1px solid transparent;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .nav-link::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+        transition: left 0.5s ease;
+    }
+
+    .nav-link:hover::before {
+        left: 100%;
+    }
+
+    .nav-link:hover {
+        transform: translateX(5px);
+        background: rgba(99, 102, 241, 0.2);
+        border-color: var(--primary-color);
+        box-shadow: 0 4px 20px rgba(99, 102, 241, 0.3);
+    }
+
+    .link-icon {
+        font-size: 1.5rem;
+        width: 2rem;
+        text-align: center;
+    }
+
+    .link-text {
+        font-weight: 500;
+    }
+
+    .link-description {
+        font-size: 0.9rem;
+        color: rgba(248, 250, 252, 0.6);
+        margin-top: 0.25rem;
+    }
+
+    /* Status indicators */
+    .status-indicator {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        margin-left: auto;
+        animation: pulse 2s infinite;
+    }
+
+    .status-online { background: var(--success-color); }
+    .status-busy { background: var(--accent-color); }
+
+    @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.5; }
+    }
+
+    /* Dark mode toggle */
+    .theme-toggle {
+        position: fixed;
+        top: 30px;
+        right: 30px;
+        background: var(--container-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 50px;
+        padding: 12px 20px;
+        cursor: pointer;
+        backdrop-filter: blur(20px);
+        transition: all 0.3s ease;
+        z-index: 1000;
+    }
+
+    .theme-toggle:hover {
+        transform: scale(1.1);
+        box-shadow: 0 5px 20px rgba(99, 102, 241, 0.3);
+    }
+
+    /* Welcome card */
+    .welcome-card {
+        background: var(--container-bg);
+        border-radius: 20px;
+        padding: 2rem;
+        border: 1px solid var(--border-color);
+        backdrop-filter: blur(20px);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        text-align: center;
+        margin-top: 2rem;
+    }
+
+    .welcome-text {
+        font-size: 1.2rem;
+        line-height: 1.6;
+        color: rgba(248, 250, 252, 0.8);
+    }
+
+    /* Responsive */
     @media (max-width: 768px) {
-        body { padding: 10px; }
-        nav { flex-direction: column; }
+        .main-container { padding: 15px; }
         h1 { font-size: 2.5rem; }
+        .nav-grid { grid-template-columns: 1fr; gap: 1.5rem; }
+        .nav-category { padding: 1.5rem; }
+        .theme-toggle { top: 15px; right: 15px; }
+    }
+
+    /* Glitch effect for title */
+    @keyframes glitch {
+        0% { transform: translate(0); }
+        20% { transform: translate(-2px, 2px); }
+        40% { transform: translate(-2px, -2px); }
+        60% { transform: translate(2px, 2px); }
+        80% { transform: translate(2px, -2px); }
+        100% { transform: translate(0); }
+    }
+
+    h1:hover {
+        animation: glitch 0.3s ease-in-out;
     }
   </style>
 </head>
 <body>
-  <button id="darkModeBtn">🌙 Dark Mode</button>
-  <div class="container">
-    <h1>AlvOps</h1>
-    <nav aria-label="Main navigation">
-      <a href="/Projects/index.html">🏠 Home</a>
-      <a href="/Projects/about.html">ℹ️ About</a>
-      <a href="/Projects/shopping-list/compra.html">🛒 Shopping List</a>
-    </nav>
-    <div class="card">
-      <p>Welcome to AlvOps, where innovation meets efficiency.</p>
+  <canvas id="particles-canvas"></canvas>
+  
+  <button class="theme-toggle" id="themeToggle">
+    🌙 Dark
+  </button>
+
+  <div class="main-container">
+    <header class="header">
+      <h1>AlvOps</h1>
+      <p class="subtitle">Operations Dashboard - Where Innovation Meets Efficiency</p>
+    </header>
+
+    <div class="nav-grid">
+      <!-- Core Operations -->
+      <div class="nav-category">
+        <h2 class="category-title">🏠 Core Operations</h2>
+        <div class="category-links">
+          <a href="/Projects/index.html" class="nav-link">
+            <span class="link-icon">🏠</span>
+            <div>
+              <div class="link-text">Home Dashboard</div>
+              <div class="link-description">Main control center</div>
+            </div>
+            <span class="status-indicator status-online"></span>
+          </a>
+          <a href="/Projects/about.html" class="nav-link">
+            <span class="link-icon">ℹ️</span>
+            <div>
+              <div class="link-text">About</div>
+              <div class="link-description">System information</div>
+            </div>
+          </a>
+        </div>
+      </div>
+
+      <!-- Productivity Tools -->
+      <div class="nav-category">
+        <h2 class="category-title">🛠️ Productivity Tools</h2>
+        <div class="category-links">
+          <a href="/Projects/shopping-list/compra.html" class="nav-link">
+            <span class="link-icon">🛒</span>
+            <div>
+              <div class="link-text">Shopping List</div>
+              <div class="link-description">Manage purchases and inventory</div>
+            </div>
+            <span class="status-indicator status-online"></span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Automation & Integration -->
+      <div class="nav-category">
+        <h2 class="category-title">🔄 Automation</h2>
+        <div class="category-links">
+          <a href="https://app.n0v4.top" target="_blank" rel="noopener noreferrer" class="nav-link">
+            <span class="link-icon">🔁</span>
+            <div>
+              <div class="link-text">n8n Workflows</div>
+              <div class="link-description">Automation platform</div>
+            </div>
+            <span class="status-indicator status-busy"></span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="welcome-card">
+      <p class="welcome-text">
+        Welcome to your centralized operations hub. Navigate through different categories to access your tools and workflows efficiently.
+      </p>
     </div>
   </div>
 
   <script>
-    const darkModeBtn = document.getElementById('darkModeBtn');
+    // Particle system
+    class ParticleSystem {
+        constructor(canvas) {
+            this.canvas = canvas;
+            this.ctx = canvas.getContext('2d');
+            this.particles = [];
+            this.mouse = { x: 0, y: 0 };
+            this.connectionDistance = 150;
+            this.maxParticles = 100;
+            
+            this.resize();
+            this.init();
+            this.bindEvents();
+            this.animate();
+        }
 
-    // Load dark mode preference
-    if(localStorage.getItem('darkMode') === 'true') {
-        document.body.classList.add('dark-mode');
-        darkModeBtn.textContent = '☀️ Light Mode';
+        resize() {
+            this.canvas.width = window.innerWidth;
+            this.canvas.height = window.innerHeight;
+        }
+
+        init() {
+            this.particles = [];
+            for (let i = 0; i < this.maxParticles; i++) {
+                this.particles.push({
+                    x: Math.random() * this.canvas.width,
+                    y: Math.random() * this.canvas.height,
+                    vx: (Math.random() - 0.5) * 0.5,
+                    vy: (Math.random() - 0.5) * 0.5,
+                    size: Math.random() * 3 + 1,
+                    opacity: Math.random() * 0.5 + 0.2
+                });
+            }
+        }
+
+        bindEvents() {
+            window.addEventListener('resize', () => this.resize());
+            window.addEventListener('mousemove', (e) => {
+                this.mouse.x = e.clientX;
+                this.mouse.y = e.clientY;
+            });
+        }
+
+        update() {
+            this.particles.forEach(particle => {
+                // Mouse attraction
+                const dx = this.mouse.x - particle.x;
+                const dy = this.mouse.y - particle.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                
+                if (distance < 200) {
+                    const force = (200 - distance) / 200;
+                    particle.vx += (dx / distance) * force * 0.01;
+                    particle.vy += (dy / distance) * force * 0.01;
+                }
+
+                // Update position
+                particle.x += particle.vx;
+                particle.y += particle.vy;
+
+                // Boundary bouncing
+                if (particle.x < 0 || particle.x > this.canvas.width) particle.vx *= -1;
+                if (particle.y < 0 || particle.y > this.canvas.height) particle.vy *= -1;
+
+                // Keep in bounds
+                particle.x = Math.max(0, Math.min(this.canvas.width, particle.x));
+                particle.y = Math.max(0, Math.min(this.canvas.height, particle.y));
+
+                // Friction
+                particle.vx *= 0.99;
+                particle.vy *= 0.99;
+            });
+        }
+
+        draw() {
+            this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+            
+            // Draw connections
+            this.ctx.strokeStyle = 'rgba(99, 102, 241, 0.1)';
+            this.ctx.lineWidth = 1;
+            
+            for (let i = 0; i < this.particles.length; i++) {
+                for (let j = i + 1; j < this.particles.length; j++) {
+                    const dx = this.particles[i].x - this.particles[j].x;
+                    const dy = this.particles[i].y - this.particles[j].y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    
+                    if (distance < this.connectionDistance) {
+                        const opacity = 1 - (distance / this.connectionDistance);
+                        this.ctx.strokeStyle = `rgba(99, 102, 241, ${opacity * 0.2})`;
+                        this.ctx.beginPath();
+                        this.ctx.moveTo(this.particles[i].x, this.particles[i].y);
+                        this.ctx.lineTo(this.particles[j].x, this.particles[j].y);
+                        this.ctx.stroke();
+                    }
+                }
+            }
+            
+            // Draw particles
+            this.particles.forEach(particle => {
+                this.ctx.beginPath();
+                this.ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+                this.ctx.fillStyle = `rgba(99, 102, 241, ${particle.opacity})`;
+                this.ctx.fill();
+                
+                // Glow effect
+                this.ctx.beginPath();
+                this.ctx.arc(particle.x, particle.y, particle.size * 3, 0, Math.PI * 2);
+                this.ctx.fillStyle = `rgba(99, 102, 241, ${particle.opacity * 0.1})`;
+                this.ctx.fill();
+            });
+        }
+
+        animate() {
+            this.update();
+            this.draw();
+            requestAnimationFrame(() => this.animate());
+        }
     }
 
-    darkModeBtn.addEventListener('click', () => {
-        document.body.classList.toggle('dark-mode');
-        const isDark = document.body.classList.contains('dark-mode');
-        localStorage.setItem('darkMode', isDark);
-        darkModeBtn.textContent = isDark ? '☀️ Light Mode' : '🌙 Dark Mode';
+    // Initialize particle system
+    const canvas = document.getElementById('particles-canvas');
+    new ParticleSystem(canvas);
+
+    // Theme toggle (keeping original functionality)
+    const themeToggle = document.getElementById('themeToggle');
+    themeToggle.addEventListener('click', () => {
+        document.body.classList.toggle('light-mode');
+        themeToggle.textContent = document.body.classList.contains('light-mode') ? '🌙 Dark' : '☀️ Light';
+    });
+
+    // Add some interactive effects
+    document.querySelectorAll('.nav-link').forEach(link => {
+        link.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateX(10px) scale(1.02)';
+        });
+        
+        link.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateX(0) scale(1)';
+        });
     });
   </script>
 </body>
