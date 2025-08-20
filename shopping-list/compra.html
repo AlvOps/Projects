@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Shopping List - Álvaro</title>
+<style>
+    :root {
+        --bg-color: #121212;
+        --container-bg: #1e1e1e;
+        --text-color: #f5f5f5;
+        --item-bg: #2a2a2a;
+        --completed-bg: #333;
+        --border-color: #444;
+    }
+    
+    body {
+        font-family: Arial, sans-serif;
+        max-width: 600px;
+        margin: 20px auto;
+        padding: 20px;
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        transition: background-color 0.3s, color 0.3s;
+    }
+    
+    .container {
+        background-color: var(--container-bg);
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        transition: background-color 0.3s;
+    }
+    
+    h1 {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+    
+    .top-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+    
+    .add-item {
+        display: flex;
+        margin-bottom: 20px;
+        gap: 10px;
+    }
+    
+    #newItem {
+        flex: 1;
+        padding: 10px;
+        border: 2px solid var(--border-color);
+        border-radius: 5px;
+        font-size: 16px;
+        background-color: var(--item-bg);
+        color: var(--text-color);
+    }
+    
+    #addBtn, #homeBtn {
+        padding: 10px 20px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+    }
+    
+    #homeBtn {
+        background-color: #555;
+    }
+    
+    #addBtn:hover { background-color: #45a049; }
+    #homeBtn:hover { background-color: #333; }
+    
+    .shopping-list {
+        list-style: none;
+        padding: 0;
+    }
+    
+    .list-item {
+        display: flex;
+        align-items: center;
+        padding: 10px;
+        margin: 5px 0;
+        background-color: var(--item-bg);
+        border-radius: 5px;
+        border-left: 4px solid #4CAF50;
+        transition: background-color 0.3s;
+    }
+    
+    .list-item input[type="checkbox"] {
+        margin-right: 10px;
+        transform: scale(1.2);
+        flex-shrink: 0;
+    }
+    
+    .list-item.completed {
+        text-decoration: line-through;
+        opacity: 0.6;
+        background-color: var(--completed-bg);
+    }
+    
+    .item-text {
+        flex: 1;
+        font-size: 16px;
+        word-break: break-word;
+    }
+    
+    .item-edit {
+        flex: 1;
+        font-size: 16px;
+        padding: 5px;
+        border-radius: 3px;
+        border: 1px solid var(--border-color);
+        background-color: var(--item-bg);
+        color: var(--text-color);
+    }
+    
+    .delete-btn {
+        background-color: #ff4444;
+        color: white;
+        border: none;
+        padding: 5px 10px;
+        border-radius: 3px;
+        cursor: pointer;
+        font-size: 12px;
+        flex-shrink: 0;
+    }
+    
+    .delete-btn:hover { background-color: #cc0000; }
+    
+    .edit-error {
+        color: #ff4444;
+        font-size: 12px;
+        margin-top: 5px;
+    }
+</style>
+</head>
+<body>
+    <div class="container">
+        <div class="top-bar">
+            <h1>🛒 Shopping List</h1>
+            <button id="homeBtn">🏠 Home</button>
+        </div>
+        <div class="add-item">
+            <input type="text" id="newItem" placeholder="Add product..." maxlength="50" autocomplete="off" aria-label="Add product" />
+            <button id="addBtn">Add</button>
+        </div>
+        <div id="feedbackMsg" style="color: #ff4444; font-size: 14px; min-height: 20px; margin-bottom: 10px; text-align: left;"></div>
+        <ul class="shopping-list" id="shoppingList" aria-label="Shopping list"></ul>
+    </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const newItemInput = document.getElementById('newItem');
+    const addBtn = document.getElementById('addBtn');
+    const shoppingList = document.getElementById('shoppingList');
+    const homeBtn = document.getElementById('homeBtn');
+
+    // Home button functionality
+    homeBtn.addEventListener('click', () => {
+        window.location.href = '/Projects/index.html';
+    });
+
+    // Load shopping list from localStorage
+    function loadList() {
+        shoppingList.innerHTML = '';
+        const items = JSON.parse(localStorage.getItem('shoppingList') || '[]');
+        items.forEach(item => shoppingList.appendChild(createListItem(item.text, item.completed)));
+    }
+
+    // Save shopping list to localStorage
+    function saveList() {
+        const items = [];
+        shoppingList.querySelectorAll('.list-item').forEach(li => {
+            items.push({
+                text: li.querySelector('.item-text').textContent,
+                completed: li.classList.contains('completed')
+            });
+        });
+        localStorage.setItem('shoppingList', JSON.stringify(items));
+    }
+
+    function createListItem(text, completed = false) {
+        const listItem = document.createElement('li');
+        listItem.className = 'list-item';
+        if (completed) listItem.classList.add('completed');
+
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.setAttribute('aria-label', 'Mark as purchased');
+        checkbox.checked = completed;
+        checkbox.addEventListener('change', () => {
+            listItem.classList.toggle('completed', checkbox.checked);
+            saveList();
+        });
+
+        const span = document.createElement('span');
+        span.className = 'item-text';
+        span.textContent = text;
+        span.setAttribute('tabindex', '0');
+        span.setAttribute('aria-label', 'Product');
+        // Edit on double click
+        span.addEventListener('dblclick', () => {
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.value = span.textContent;
+            input.className = 'item-edit';
+            input.setAttribute('aria-label', 'Edit product');
+            input.addEventListener('blur', finishEdit);
+            input.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') finishEdit();
+            });
+            listItem.replaceChild(input, span);
+            input.focus();
+            function finishEdit() {
+                const newText = input.value.trim();
+                // Remove any previous error message
+                const prevError = listItem.querySelector('.edit-error');
+                if (prevError) prevError.remove();
+
+                if (newText && !isDuplicate(newText, listItem)) {
+                    span.textContent = newText;
+                    listItem.replaceChild(span, input);
+                    saveList();
+                } else if (isDuplicate(newText, listItem)) {
+                    // Show error message for duplicate
+                    let errorMsg = document.createElement('div');
+                    errorMsg.className = 'edit-error';
+                    errorMsg.textContent = 'Duplicate product';
+                    errorMsg.style.color = '#ff4444';
+                    errorMsg.style.fontSize = '12px';
+                    errorMsg.style.marginTop = '5px';
+                    listItem.appendChild(errorMsg);
+                    input.focus();
+                    setTimeout(() => {
+                        if (errorMsg.parentNode) errorMsg.remove();
+                    }, 2000);
+                } else {
+                    listItem.replaceChild(span, input);
+                    saveList();
+                }
+            }
+        });
+
+        const deleteBtn = document.createElement('button');
+        deleteBtn.className = 'delete-btn';
+        deleteBtn.textContent = 'Delete';
+        deleteBtn.setAttribute('aria-label', 'Delete product');
+        deleteBtn.addEventListener('click', () => {
+            shoppingList.removeChild(listItem);
+            saveList();
+        });
+
+        listItem.appendChild(checkbox);
+        listItem.appendChild(span);
+        listItem.appendChild(deleteBtn);
+
+        return listItem;
+    }
+
+    function isDuplicate(text, excludeItem = null) {
+        return Array.from(shoppingList.querySelectorAll('.list-item')).some(li => {
+            if (li === excludeItem) return false;
+            return li.querySelector('.item-text').textContent.toLowerCase() === text.toLowerCase();
+        });
+    }
+
+    function addItem() {
+        const itemText = newItemInput.value.trim();
+        const feedbackMsg = document.getElementById('feedbackMsg');
+        feedbackMsg.textContent = '';
+        if (!itemText) return;
+        if (isDuplicate(itemText)) {
+            feedbackMsg.textContent = 'This product is already in the list.';
+            setTimeout(() => { feedbackMsg.textContent = ''; }, 2000);
+            return;
+        }
+        shoppingList.appendChild(createListItem(itemText));
+        newItemInput.value = '';
+        newItemInput.focus();
+        saveList();
+    }
+
+    addBtn.addEventListener('click', addItem);
+    newItemInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            addItem();
+        }
+    });
+
+    // Initial load (demo items only if no list exists)
+    if (!localStorage.getItem('shoppingList')) {
+        ['Bread', 'Milk', 'Eggs'].forEach(item => shoppingList.appendChild(createListItem(item)));
+        saveList();
+    } else {
+        loadList();
+    }
+});
+</script>
+</body>
+</html>
