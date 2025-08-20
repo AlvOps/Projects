@@ -3,160 +3,474 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Shopping List - Álvaro</title>
+<title>Shopping List</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 <style>
     :root {
-        --bg-color: #121212;
-        --container-bg: #1e1e1e;
-        --text-color: #f5f5f5;
-        --item-bg: #2a2a2a;
-        --completed-bg: #333;
-        --border-color: #444;
+        --primary-color: #6366f1;
+        --secondary-color: #8b5cf6;
+        --accent-color: #f59e0b;
+        --success-color: #10b981;
+        --bg-color: #0f0f23;
+        --container-bg: rgba(17, 24, 39, 0.8);
+        --text-color: #f8fafc;
+        --item-bg: rgba(30, 41, 59, 0.6);
+        --completed-bg: rgba(75, 85, 99, 0.4);
+        --border-color: rgba(148, 163, 184, 0.2);
+        --glow-color: #6366f1;
     }
-    
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
     body {
-        font-family: Arial, sans-serif;
-        max-width: 600px;
-        margin: 20px auto;
-        padding: 20px;
-        background-color: var(--bg-color);
+        font-family: 'Poppins', sans-serif;
+        background: var(--bg-color);
         color: var(--text-color);
-        transition: background-color 0.3s, color 0.3s;
+        overflow-x: hidden;
+        min-height: 100vh;
+        position: relative;
     }
-    
-    .container {
-        background-color: var(--container-bg);
+
+    /* Animated Background */
+    #particles-canvas {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+        background: linear-gradient(45deg, #0f0f23, #1a1a3e);
+    }
+
+    /* Moving background shapes */
+    .bg-shapes {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+        overflow: hidden;
+    }
+
+    .bg-shape {
+        position: absolute;
+        background: linear-gradient(45deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1));
+        border-radius: 50%;
+        animation: float 20s infinite ease-in-out;
+    }
+
+    .bg-shape:nth-child(1) {
+        width: 300px;
+        height: 300px;
+        top: 10%;
+        left: 10%;
+        animation-delay: 0s;
+    }
+
+    .bg-shape:nth-child(2) {
+        width: 200px;
+        height: 200px;
+        top: 60%;
+        right: 10%;
+        animation-delay: -7s;
+    }
+
+    .bg-shape:nth-child(3) {
+        width: 150px;
+        height: 150px;
+        bottom: 20%;
+        left: 30%;
+        animation-delay: -14s;
+    }
+
+    .bg-shape:nth-child(4) {
+        width: 400px;
+        height: 400px;
+        top: 30%;
+        right: 30%;
+        animation-delay: -5s;
+    }
+
+    @keyframes float {
+        0%, 100% { 
+            transform: translate(0, 0) rotate(0deg);
+            opacity: 0.3;
+        }
+        25% {
+            transform: translate(30px, -30px) rotate(90deg);
+            opacity: 0.1;
+        }
+        50% {
+            transform: translate(-20px, 20px) rotate(180deg);
+            opacity: 0.4;
+        }
+        75% {
+            transform: translate(-30px, -20px) rotate(270deg);
+            opacity: 0.2;
+        }
+    }
+
+    .main-container {
+        position: relative;
+        max-width: 800px;
+        margin: 0 auto;
         padding: 20px;
-        border-radius: 10px;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-        transition: background-color 0.3s;
+        min-height: 100vh;
+        backdrop-filter: blur(10px);
     }
-    
+
+    .container {
+        background: var(--container-bg);
+        border-radius: 20px;
+        padding: 2rem;
+        border: 1px solid var(--border-color);
+        backdrop-filter: blur(20px);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .container::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, var(--primary-color), var(--secondary-color), var(--accent-color));
+        opacity: 1;
+    }
+
     h1 {
         text-align: center;
-        margin-bottom: 20px;
+        margin-bottom: 2rem;
+        font-size: 2.5rem;
+        font-weight: 600;
+        color: var(--accent-color);
     }
-    
+
     .top-bar {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 20px;
+        margin-bottom: 2rem;
     }
-    
+
     .add-item {
         display: flex;
-        margin-bottom: 20px;
-        gap: 10px;
+        margin-bottom: 2rem;
+        gap: 1rem;
     }
-    
+
     #newItem {
         flex: 1;
-        padding: 10px;
-        border: 2px solid var(--border-color);
-        border-radius: 5px;
+        padding: 1rem 1.5rem;
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
         font-size: 16px;
-        background-color: var(--item-bg);
+        background: var(--item-bg);
         color: var(--text-color);
+        font-family: 'Poppins', sans-serif;
+        transition: all 0.3s ease;
     }
-    
+
+    #newItem:focus {
+        outline: none;
+        border-color: var(--primary-color);
+        box-shadow: 0 4px 20px rgba(99, 102, 241, 0.3);
+    }
+
     #addBtn, #homeBtn {
-        padding: 10px 20px;
-        background-color: #4CAF50;
-        color: white;
+        padding: 1rem 1.5rem;
         border: none;
-        border-radius: 5px;
+        border-radius: 12px;
         cursor: pointer;
         font-size: 16px;
+        font-weight: 500;
+        font-family: 'Poppins', sans-serif;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
     }
-    
+
+    #addBtn {
+        background: linear-gradient(135deg, var(--success-color), #059669);
+        color: white;
+    }
+
     #homeBtn {
-        background-color: #555;
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        color: white;
     }
-    
-    #addBtn:hover { background-color: #45a049; }
-    #homeBtn:hover { background-color: #333; }
-    
+
+    #addBtn:hover, #homeBtn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(99, 102, 241, 0.4);
+    }
+
     .shopping-list {
         list-style: none;
         padding: 0;
     }
-    
+
     .list-item {
         display: flex;
         align-items: center;
-        padding: 10px;
-        margin: 5px 0;
-        background-color: var(--item-bg);
-        border-radius: 5px;
-        border-left: 4px solid #4CAF50;
-        transition: background-color 0.3s;
+        padding: 1rem 1.5rem;
+        margin: 1rem 0;
+        background: var(--item-bg);
+        border-radius: 12px;
+        border: 1px solid var(--border-color);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
     }
-    
+
+    .list-item::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+        transition: left 0.5s ease;
+    }
+
+    .list-item:hover::before {
+        left: 100%;
+    }
+
+    .list-item:hover {
+        transform: translateY(-2px);
+        background: rgba(99, 102, 241, 0.2);
+        border-color: var(--primary-color);
+        box-shadow: 0 4px 20px rgba(99, 102, 241, 0.3);
+    }
+
     .list-item input[type="checkbox"] {
-        margin-right: 10px;
-        transform: scale(1.2);
+        margin-right: 1rem;
+        transform: scale(1.3);
         flex-shrink: 0;
+        accent-color: var(--success-color);
     }
-    
+
     .list-item.completed {
         text-decoration: line-through;
         opacity: 0.6;
-        background-color: var(--completed-bg);
+        background: var(--completed-bg);
     }
-    
+
     .item-text {
         flex: 1;
         font-size: 16px;
+        font-weight: 500;
         word-break: break-word;
     }
-    
+
     .item-edit {
         flex: 1;
         font-size: 16px;
-        padding: 5px;
-        border-radius: 3px;
+        padding: 0.5rem;
+        border-radius: 8px;
         border: 1px solid var(--border-color);
-        background-color: var(--item-bg);
+        background: var(--item-bg);
         color: var(--text-color);
+        font-family: 'Poppins', sans-serif;
     }
-    
+
     .delete-btn {
-        background-color: #ff4444;
+        background: linear-gradient(135deg, #ef4444, #dc2626);
         color: white;
         border: none;
-        padding: 5px 10px;
-        border-radius: 3px;
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
         cursor: pointer;
         font-size: 12px;
+        font-weight: 500;
         flex-shrink: 0;
+        transition: all 0.3s ease;
+        font-family: 'Poppins', sans-serif;
     }
-    
-    .delete-btn:hover { background-color: #cc0000; }
-    
+
+    .delete-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
+    }
+
     .edit-error {
-        color: #ff4444;
+        color: #ef4444;
         font-size: 12px;
-        margin-top: 5px;
+        margin-top: 0.5rem;
+        font-weight: 500;
+    }
+
+    #feedbackMsg {
+        color: #ef4444;
+        font-size: 14px;
+        min-height: 20px;
+        margin-bottom: 1rem;
+        text-align: left;
+        font-weight: 500;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .main-container { padding: 15px; }
+        h1 { font-size: 2rem; }
+        .container { padding: 1.5rem; }
+        .add-item { flex-direction: column; }
     }
 </style>
 </head>
 <body>
-    <div class="container">
-        <div class="top-bar">
-            <h1>🛒 Shopping List</h1>
-            <button id="homeBtn">🏠 Home</button>
+    <canvas id="particles-canvas"></canvas>
+    <div class="bg-shapes">
+        <div class="bg-shape"></div>
+        <div class="bg-shape"></div>
+        <div class="bg-shape"></div>
+        <div class="bg-shape"></div>
+    </div>
+
+    <div class="main-container">
+        <div class="container">
+            <div class="top-bar">
+                <h1>🛒 Shopping List</h1>
+                <button id="homeBtn">🏠 Home</button>
+            </div>
+            <div class="add-item">
+                <input type="text" id="newItem" placeholder="Add product..." maxlength="50" autocomplete="off" aria-label="Add product" />
+                <button id="addBtn">Add</button>
+            </div>
+            <div id="feedbackMsg"></div>
+            <ul class="shopping-list" id="shoppingList" aria-label="Shopping list"></ul>
         </div>
-        <div class="add-item">
-            <input type="text" id="newItem" placeholder="Add product..." maxlength="50" autocomplete="off" aria-label="Add product" />
-            <button id="addBtn">Add</button>
-        </div>
-        <div id="feedbackMsg" style="color: #ff4444; font-size: 14px; min-height: 20px; margin-bottom: 10px; text-align: left;"></div>
-        <ul class="shopping-list" id="shoppingList" aria-label="Shopping list"></ul>
     </div>
 
 <script>
+// Particle system (mismo que index.html)
+class ParticleSystem {
+    constructor(canvas) {
+        this.canvas = canvas;
+        this.ctx = canvas.getContext('2d');
+        this.particles = [];
+        this.mouse = { x: 0, y: 0 };
+        this.connectionDistance = 150;
+        this.maxParticles = 100;
+        
+        this.resize();
+        this.init();
+        this.bindEvents();
+        this.animate();
+    }
+
+    resize() {
+        this.canvas.width = window.innerWidth;
+        this.canvas.height = window.innerHeight;
+    }
+
+    init() {
+        this.particles = [];
+        for (let i = 0; i < this.maxParticles; i++) {
+            this.particles.push({
+                x: Math.random() * this.canvas.width,
+                y: Math.random() * this.canvas.height,
+                vx: (Math.random() - 0.5) * 0.5,
+                vy: (Math.random() - 0.5) * 0.5,
+                size: Math.random() * 3 + 1,
+                opacity: Math.random() * 0.5 + 0.2
+            });
+        }
+    }
+
+    bindEvents() {
+        window.addEventListener('resize', () => this.resize());
+        window.addEventListener('mousemove', (e) => {
+            this.mouse.x = e.clientX;
+            this.mouse.y = e.clientY;
+        });
+    }
+
+    update() {
+        this.particles.forEach(particle => {
+            const dx = this.mouse.x - particle.x;
+            const dy = this.mouse.y - particle.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            
+            if (distance < 200) {
+                const force = (200 - distance) / 200;
+                particle.vx += (dx / distance) * force * 0.01;
+                particle.vy += (dy / distance) * force * 0.01;
+            }
+
+            particle.x += particle.vx;
+            particle.y += particle.vy;
+
+            if (particle.x < 0 || particle.x > this.canvas.width) particle.vx *= -1;
+            if (particle.y < 0 || particle.y > this.canvas.height) particle.vy *= -1;
+
+            particle.x = Math.max(0, Math.min(this.canvas.width, particle.x));
+            particle.y = Math.max(0, Math.min(this.canvas.height, particle.y));
+
+            particle.vx *= 0.99;
+            particle.vy *= 0.99;
+        });
+    }
+
+    draw() {
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        
+        this.ctx.strokeStyle = 'rgba(99, 102, 241, 0.1)';
+        this.ctx.lineWidth = 1;
+        
+        for (let i = 0; i < this.particles.length; i++) {
+            for (let j = i + 1; j < this.particles.length; j++) {
+                const dx = this.particles[i].x - this.particles[j].x;
+                const dy = this.particles[i].y - this.particles[j].y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                
+                if (distance < this.connectionDistance) {
+                    const opacity = 1 - (distance / this.connectionDistance);
+                    this.ctx.strokeStyle = `rgba(99, 102, 241, ${opacity * 0.2})`;
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(this.particles[i].x, this.particles[i].y);
+                    this.ctx.lineTo(this.particles[j].x, this.particles[j].y);
+                    this.ctx.stroke();
+                }
+            }
+        }
+        
+        this.particles.forEach(particle => {
+            this.ctx.beginPath();
+            this.ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+            this.ctx.fillStyle = `rgba(99, 102, 241, ${particle.opacity})`;
+            this.ctx.fill();
+            
+            this.ctx.beginPath();
+            this.ctx.arc(particle.x, particle.y, particle.size * 3, 0, Math.PI * 2);
+            this.ctx.fillStyle = `rgba(99, 102, 241, ${particle.opacity * 0.1})`;
+            this.ctx.fill();
+        });
+    }
+
+    animate() {
+        this.update();
+        this.draw();
+        requestAnimationFrame(() => this.animate());
+    }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
+    // Initialize particle system
+    const canvas = document.getElementById('particles-canvas');
+    new ParticleSystem(canvas);
+
     const newItemInput = document.getElementById('newItem');
     const addBtn = document.getElementById('addBtn');
     const shoppingList = document.getElementById('shoppingList');
@@ -205,6 +519,7 @@ document.addEventListener('DOMContentLoaded', () => {
         span.textContent = text;
         span.setAttribute('tabindex', '0');
         span.setAttribute('aria-label', 'Product');
+        
         // Edit on double click
         span.addEventListener('dblclick', () => {
             const input = document.createElement('input');
@@ -218,9 +533,9 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             listItem.replaceChild(input, span);
             input.focus();
+            
             function finishEdit() {
                 const newText = input.value.trim();
-                // Remove any previous error message
                 const prevError = listItem.querySelector('.edit-error');
                 if (prevError) prevError.remove();
 
@@ -229,13 +544,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     listItem.replaceChild(span, input);
                     saveList();
                 } else if (isDuplicate(newText, listItem)) {
-                    // Show error message for duplicate
                     let errorMsg = document.createElement('div');
                     errorMsg.className = 'edit-error';
                     errorMsg.textContent = 'Duplicate product';
-                    errorMsg.style.color = '#ff4444';
-                    errorMsg.style.fontSize = '12px';
-                    errorMsg.style.marginTop = '5px';
                     listItem.appendChild(errorMsg);
                     input.focus();
                     setTimeout(() => {
@@ -295,7 +606,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Initial load (demo items only if no list exists)
+    // Initial load
     if (!localStorage.getItem('shoppingList')) {
         ['Bread', 'Milk', 'Eggs'].forEach(item => shoppingList.appendChild(createListItem(item)));
         saveList();
