@@ -33,6 +33,7 @@
         color: var(--text-color);
         overflow-x: hidden;
         min-height: 100vh;
+        position: relative;
     }
 
     /* Animated Background */
@@ -44,6 +45,75 @@
         height: 100%;
         z-index: -1;
         background: linear-gradient(45deg, #0f0f23, #1a1a3e);
+    }
+
+    /* Moving background shapes */
+    .bg-shapes {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+        overflow: hidden;
+    }
+
+    .bg-shape {
+        position: absolute;
+        background: linear-gradient(45deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1));
+        border-radius: 50%;
+        animation: float 20s infinite ease-in-out;
+    }
+
+    .bg-shape:nth-child(1) {
+        width: 300px;
+        height: 300px;
+        top: 10%;
+        left: 10%;
+        animation-delay: 0s;
+    }
+
+    .bg-shape:nth-child(2) {
+        width: 200px;
+        height: 200px;
+        top: 60%;
+        right: 10%;
+        animation-delay: -7s;
+    }
+
+    .bg-shape:nth-child(3) {
+        width: 150px;
+        height: 150px;
+        bottom: 20%;
+        left: 30%;
+        animation-delay: -14s;
+    }
+
+    .bg-shape:nth-child(4) {
+        width: 400px;
+        height: 400px;
+        top: 30%;
+        right: 30%;
+        animation-delay: -5s;
+    }
+
+    @keyframes float {
+        0%, 100% { 
+            transform: translate(0, 0) rotate(0deg);
+            opacity: 0.3;
+        }
+        25% {
+            transform: translate(30px, -30px) rotate(90deg);
+            opacity: 0.1;
+        }
+        50% {
+            transform: translate(-20px, 20px) rotate(180deg);
+            opacity: 0.4;
+        }
+        75% {
+            transform: translate(-30px, -20px) rotate(270deg);
+            opacity: 0.2;
+        }
     }
 
     .main-container {
@@ -64,26 +134,58 @@
     h1 {
         font-family: 'RuneScape UF', sans-serif;
         font-size: 4rem;
-        background: linear-gradient(45deg, #ffd700, #ffed4e, #ffd700);
-        background-size: 200% 200%;
-        animation: gradientShift 3s ease infinite;
+        background: linear-gradient(45deg, #ffd700, #ff4500, #ffd700, #ff6347, #ffd700);
+        background-size: 400% 400%;
+        animation: fireGradient 3s ease infinite, fireFlicker 0.5s ease-in-out infinite alternate;
         -webkit-background-clip: text;
         background-clip: text;
         -webkit-text-fill-color: transparent;
-        text-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+        text-shadow: 
+            0 0 10px rgba(255, 215, 0, 0.8),
+            0 0 20px rgba(255, 69, 0, 0.6),
+            0 0 30px rgba(255, 99, 71, 0.4),
+            0 0 40px rgba(255, 165, 0, 0.2);
         letter-spacing: 3px;
         margin-bottom: 1rem;
+        filter: brightness(1.2);
+    }
+
+    @keyframes fireGradient {
+        0%, 100% { background-position: 0% 50%; }
+        25% { background-position: 100% 0%; }
+        50% { background-position: 200% 50%; }
+        75% { background-position: 300% 100%; }
+    }
+
+    @keyframes fireFlicker {
+        0% { 
+            text-shadow: 
+                0 0 10px rgba(255, 215, 0, 0.8),
+                0 0 20px rgba(255, 69, 0, 0.6),
+                0 0 30px rgba(255, 99, 71, 0.4);
+            filter: brightness(1.2);
+        }
+        50% {
+            text-shadow: 
+                0 0 15px rgba(255, 215, 0, 1),
+                0 0 25px rgba(255, 69, 0, 0.8),
+                0 0 35px rgba(255, 99, 71, 0.6),
+                0 0 45px rgba(255, 140, 0, 0.4);
+            filter: brightness(1.4);
+        }
+        100% { 
+            text-shadow: 
+                0 0 8px rgba(255, 215, 0, 0.7),
+                0 0 18px rgba(255, 69, 0, 0.5),
+                0 0 28px rgba(255, 99, 71, 0.3);
+            filter: brightness(1.1);
+        }
     }
 
     .subtitle {
         font-size: 1.2rem;
         color: rgba(248, 250, 252, 0.7);
         font-weight: 300;
-    }
-
-    @keyframes gradientShift {
-        0%, 100% { background-position: 0% 50%; }
-        50% { background-position: 100% 50%; }
     }
 
     /* Navigation Grid */
@@ -214,26 +316,6 @@
         50% { opacity: 0.5; }
     }
 
-    /* Dark mode toggle */
-    .theme-toggle {
-        position: fixed;
-        top: 30px;
-        right: 30px;
-        background: var(--container-bg);
-        border: 1px solid var(--border-color);
-        border-radius: 50px;
-        padding: 12px 20px;
-        cursor: pointer;
-        backdrop-filter: blur(20px);
-        transition: all 0.3s ease;
-        z-index: 1000;
-    }
-
-    .theme-toggle:hover {
-        transform: scale(1.1);
-        box-shadow: 0 5px 20px rgba(99, 102, 241, 0.3);
-    }
-
     /* Welcome card */
     .welcome-card {
         background: var(--container-bg);
@@ -258,7 +340,6 @@
         h1 { font-size: 2.5rem; }
         .nav-grid { grid-template-columns: 1fr; gap: 1.5rem; }
         .nav-category { padding: 1.5rem; }
-        .theme-toggle { top: 15px; right: 15px; }
     }
 
     /* Glitch effect for title */
@@ -272,16 +353,18 @@
     }
 
     h1:hover {
-        animation: glitch 0.3s ease-in-out;
+        animation: fireGradient 3s ease infinite, fireFlicker 0.3s ease-in-out infinite alternate, glitch 0.3s ease-in-out;
     }
   </style>
 </head>
 <body>
   <canvas id="particles-canvas"></canvas>
-  
-  <button class="theme-toggle" id="themeToggle">
-    🌙 Dark
-  </button>
+  <div class="bg-shapes">
+    <div class="bg-shape"></div>
+    <div class="bg-shape"></div>
+    <div class="bg-shape"></div>
+    <div class="bg-shape"></div>
+  </div>
 
   <div class="main-container">
     <header class="header">
@@ -474,13 +557,6 @@
     // Initialize particle system
     const canvas = document.getElementById('particles-canvas');
     new ParticleSystem(canvas);
-
-    // Theme toggle (keeping original functionality)
-    const themeToggle = document.getElementById('themeToggle');
-    themeToggle.addEventListener('click', () => {
-        document.body.classList.toggle('light-mode');
-        themeToggle.textContent = document.body.classList.contains('light-mode') ? '🌙 Dark' : '☀️ Light';
-    });
 
     // Add some interactive effects
     document.querySelectorAll('.nav-link').forEach(link => {
