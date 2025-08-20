@@ -343,7 +343,7 @@
         </header>
 
         <div style="text-align: center; margin-bottom: 2rem;">
-            <a href="/Projects/index.html" class="home-btn">
+            <a href="index.html" class="home-btn">
                 <span>🏠</span>
                 <span>Back to Home</span>
             </a>
@@ -465,48 +465,4 @@
                         if (distance < this.connectionDistance) {
                             const opacity = 1 - (distance / this.connectionDistance);
                             this.ctx.strokeStyle = `rgba(99, 102, 241, ${opacity * 0.2})`;
-                            this.ctx.beginPath();
-                            this.ctx.moveTo(this.particles[i].x, this.particles[i].y);
-                            this.ctx.lineTo(this.particles[j].x, this.particles[j].y);
-                            this.ctx.stroke();
-                        }
-                    }
-                }
-                
-                // Draw particles
-                this.particles.forEach(particle => {
-                    this.ctx.beginPath();
-                    this.ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
-                    this.ctx.fillStyle = `rgba(99, 102, 241, ${particle.opacity})`;
-                    this.ctx.fill();
-                    
-                    // Glow effect
-                    this.ctx.beginPath();
-                    this.ctx.arc(particle.x, particle.y, particle.size * 3, 0, Math.PI * 2);
-                    this.ctx.fillStyle = `rgba(99, 102, 241, ${particle.opacity * 0.1})`;
-                    this.ctx.fill();
-                });
-            }
-
-            animate() {
-                this.update();
-                this.draw();
-                requestAnimationFrame(() => this.animate());
-            }
-        }
-
-        // Initialize particle system
-        const canvas = document.getElementById('particles-canvas');
-        new ParticleSystem(canvas);
-
-        // Add interactive effects
-        document.querySelector('.avatar').addEventListener('mouseenter', function() {
-            this.style.transform = 'scale(1.1) rotate(5deg)';
-        });
-        
-        document.querySelector('.avatar').addEventListener('mouseleave', function() {
-            this.style.transform = 'scale(1) rotate(0deg)';
-        });
-    </script>
-</body>
-</html>
+                            this.ctx
