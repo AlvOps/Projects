@@ -1,7 +1,7 @@
 # 🫑 Grocery Shopping / 🍅 Lista de la compra
 
-## 🇺🇸 English
-🇺🇸
+## English
+
 Welcome! 👋  
 This is a simple and elegant grocery shopping list web app built with HTML, CSS, and Vanilla JavaScript.
 It features local storage persistence, editable items, and an animated interactive particle background.
@@ -60,7 +60,7 @@ Vanilla JavaScript (DOM manipulation, localStorage, canvas animation)
 
 ---
 
-## 🇪🇸 Español
+## Español
 
 Bienvenido! 👋
 
