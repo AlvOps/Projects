@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Shopping List</title>
+<title>Shopping List - Álvaro</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 <style>
     :root {
@@ -11,6 +11,7 @@
         --secondary-color: #8b5cf6;
         --accent-color: #f59e0b;
         --success-color: #10b981;
+        --error-color: #ef4444;
         --bg-color: #0f0f23;
         --container-bg: rgba(17, 24, 39, 0.8);
         --text-color: #f8fafc;
@@ -18,6 +19,7 @@
         --completed-bg: rgba(75, 85, 99, 0.4);
         --border-color: rgba(148, 163, 184, 0.2);
         --glow-color: #6366f1;
+        --transition-time: 0.3s;
     }
 
     * {
@@ -160,6 +162,13 @@
         justify-content: space-between;
         align-items: center;
         margin-bottom: 2rem;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .top-buttons {
+        display: flex;
+        gap: 1rem;
     }
 
     .add-item {
@@ -177,7 +186,7 @@
         background: var(--item-bg);
         color: var(--text-color);
         font-family: 'Poppins', sans-serif;
-        transition: all 0.3s ease;
+        transition: all var(--transition-time) ease;
     }
 
     #newItem:focus {
@@ -186,7 +195,7 @@
         box-shadow: 0 4px 20px rgba(99, 102, 241, 0.3);
     }
 
-    #addBtn, #resetBtn {
+    #addBtn, #clearCompletedBtn, #clearAllBtn {
         padding: 1rem 1.5rem;
         border: none;
         border-radius: 12px;
@@ -194,9 +203,10 @@
         font-size: 16px;
         font-weight: 500;
         font-family: 'Poppins', sans-serif;
-        transition: all 0.3s ease;
+        transition: all var(--transition-time) ease;
         position: relative;
         overflow: hidden;
+        white-space: nowrap;
     }
 
     #addBtn {
@@ -204,19 +214,19 @@
         color: white;
     }
 
-    #resetBtn {
-        background: linear-gradient(135deg, #ef4444, #dc2626);
+    #clearCompletedBtn {
+        background: linear-gradient(135deg, #f97316, #ea580c);
         color: white;
     }
 
-    #addBtn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
+    #clearAllBtn {
+        background: linear-gradient(135deg, var(--error-color), #b91c1c);
+        color: white;
     }
 
-    #resetBtn:hover {
+    #addBtn:hover, #clearCompletedBtn:hover, #clearAllBtn:hover {
         transform: translateY(-2px);
-        box-shadow: 0 8px 25px rgba(239, 68, 68, 0.4);
+        box-shadow: 0 8px 25px rgba(99, 102, 241, 0.4);
     }
 
     .shopping-list {
@@ -232,9 +242,24 @@
         background: var(--item-bg);
         border-radius: 12px;
         border: 1px solid var(--border-color);
-        transition: all 0.3s ease;
+        transition: all var(--transition-time) ease;
         position: relative;
         overflow: hidden;
+        animation: fadeIn 0.5s ease;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .list-item.removing {
+        animation: fadeOut 0.5s ease forwards;
+    }
+
+    @keyframes fadeOut {
+        from { opacity: 1; transform: translateY(0); }
+        to { opacity: 0; transform: translateY(10px); }
     }
 
     .list-item::before {
@@ -264,6 +289,7 @@
         transform: scale(1.3);
         flex-shrink: 0;
         accent-color: var(--success-color);
+        cursor: pointer;
     }
 
     .list-item.completed {
@@ -277,6 +303,8 @@
         font-size: 16px;
         font-weight: 500;
         word-break: break-word;
+        cursor: pointer;
+        padding: 4px 0;
     }
 
     .item-edit {
@@ -291,7 +319,7 @@
     }
 
     .delete-btn {
-        background: linear-gradient(135deg, #ef4444, #dc2626);
+        background: linear-gradient(135deg, var(--error-color), #dc2626);
         color: white;
         border: none;
         padding: 0.5rem 1rem;
@@ -300,7 +328,7 @@
         font-size: 12px;
         font-weight: 500;
         flex-shrink: 0;
-        transition: all 0.3s ease;
+        transition: all var(--transition-time) ease;
         font-family: 'Poppins', sans-serif;
     }
 
@@ -310,19 +338,66 @@
     }
 
     .edit-error {
-        color: #ef4444;
+        color: var(--error-color);
         font-size: 12px;
         margin-top: 0.5rem;
         font-weight: 500;
     }
 
     #feedbackMsg {
-        color: #ef4444;
+        color: var(--error-color);
         font-size: 14px;
         min-height: 20px;
         margin-bottom: 1rem;
         text-align: left;
         font-weight: 500;
+        transition: all var(--transition-time) ease;
+    }
+
+    .feedback-success {
+        color: var(--success-color) !important;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 2rem;
+        color: rgba(255, 255, 255, 0.5);
+    }
+
+    .empty-state.hidden {
+        display: none;
+    }
+
+    /* Toast notification */
+    .toast {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        padding: 1rem 1.5rem;
+        border-radius: 8px;
+        background: var(--container-bg);
+        color: var(--text-color);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        transform: translateY(100px);
+        opacity: 0;
+        transition: all 0.5s ease;
+        z-index: 1000;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .toast.show {
+        transform: translateY(0);
+        opacity: 1;
+    }
+
+    .toast.success {
+        border-left: 4px solid var(--success-color);
+    }
+
+    .toast.error {
+        border-left: 4px solid var(--error-color);
     }
 
     /* Responsive */
@@ -331,6 +406,17 @@
         h1 { font-size: 2rem; }
         .container { padding: 1.5rem; }
         .add-item { flex-direction: column; }
+        .top-bar { justify-content: center; }
+        .top-buttons { 
+            width: 100%; 
+            justify-content: center;
+            margin-top: 1rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .top-buttons { flex-direction: column; }
+        #clearCompletedBtn, #clearAllBtn { width: 100%; }
     }
 </style>
 </head>
@@ -347,19 +433,26 @@
         <div class="container">
             <div class="top-bar">
                 <h1>🛒 Shopping List</h1>
-                <button id="resetBtn">🟥 Reset all</button>
+                <div class="top-buttons">
+                    <button id="clearCompletedBtn">Clear Completed</button>
+                    <button id="clearAllBtn">Clear All</button>
+                </div>
             </div>
             <div class="add-item">
                 <input type="text" id="newItem" placeholder="Add product..." maxlength="50" autocomplete="off" aria-label="Add product" />
                 <button id="addBtn">Add</button>
             </div>
             <div id="feedbackMsg"></div>
-            <ul class="shopping-list" id="shoppingList" aria-label="Shopping list"></ul>
+            <ul class="shopping-list" id="shoppingList" aria-label="Shopping list">
+                <li class="empty-state" id="emptyState">Your shopping list is empty. Add some items!</li>
+            </ul>
         </div>
     </div>
 
+    <div class="toast" id="toast"></div>
+
 <script>
-// Particle system (same as index.html)
+// Particle system
 class ParticleSystem {
     constructor(canvas) {
         this.canvas = canvas;
@@ -471,50 +564,70 @@ class ParticleSystem {
     }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    // Initialize particle system
-    const canvas = document.getElementById('particles-canvas');
-    new ParticleSystem(canvas);
-
-    const newItemInput = document.getElementById('newItem');
-    const addBtn = document.getElementById('addBtn');
-    const shoppingList = document.getElementById('shoppingList');
-    const resetBtn = document.getElementById('resetBtn');
-
-    // Reset button functionality
-    resetBtn.addEventListener('click', () => {
-        if (confirm('Are you sure you want to delete ALL your items? This action cannot be undone.')) {
-            localStorage.removeItem('shoppingList');
-            shoppingList.innerHTML = '';
-            // Optionally add default items back
-            ['Bread', 'Milk', 'Eggs'].forEach(item => shoppingList.appendChild(createListItem(item)));
-            saveList();
-        }
-    });
-
-    // Load shopping list from localStorage
-    function loadList() {
-        shoppingList.innerHTML = '';
-        const items = JSON.parse(localStorage.getItem('shoppingList') || '[]');
-        items.forEach(item => shoppingList.appendChild(createListItem(item.text, item.completed)));
+// Shopping List Application
+class ShoppingListApp {
+    constructor() {
+        this.newItemInput = document.getElementById('newItem');
+        this.addBtn = document.getElementById('addBtn');
+        this.shoppingList = document.getElementById('shoppingList');
+        this.clearCompletedBtn = document.getElementById('clearCompletedBtn');
+        this.clearAllBtn = document.getElementById('clearAllBtn');
+        this.feedbackMsg = document.getElementById('feedbackMsg');
+        this.emptyState = document.getElementById('emptyState');
+        this.toast = document.getElementById('toast');
+        
+        this.init();
     }
-
-    // Save shopping list to localStorage
-    function saveList() {
-        const items = [];
-        shoppingList.querySelectorAll('.list-item').forEach(li => {
-            items.push({
-                text: li.querySelector('.item-text').textContent,
-                completed: li.classList.contains('completed')
-            });
+    
+    init() {
+        // Initialize particle system
+        const canvas = document.getElementById('particles-canvas');
+        new ParticleSystem(canvas);
+        
+        // Bind events
+        this.addBtn.addEventListener('click', () => this.addItem());
+        this.newItemInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                this.addItem();
+            }
         });
-        localStorage.setItem('shoppingList', JSON.stringify(items));
+        
+        this.clearCompletedBtn.addEventListener('click', () => this.clearCompleted());
+        this.clearAllBtn.addEventListener('click', () => this.clearAll());
+        
+        // Initial load
+        this.loadList();
     }
-
-    function createListItem(text, completed = false) {
+    
+    // Load shopping list from localStorage
+    loadList() {
+        this.shoppingList.innerHTML = '';
+        const items = JSON.parse(localStorage.getItem('shoppingList') || '[]');
+        
+        if (items.length === 0) {
+            this.emptyState.classList.remove('hidden');
+            // Add default items if empty
+            ['Bread', 'Milk', 'Eggs'].forEach(item => this.addListItem(item, false, true));
+            this.saveList();
+        } else {
+            this.emptyState.classList.add('hidden');
+            items.forEach(item => this.addListItem(item.text, item.completed, false));
+        }
+    }
+    
+    // Add a new list item to the DOM
+    addListItem(text, completed = false, animate = true) {
+        if (animate) {
+            this.emptyState.classList.add('hidden');
+        }
+        
         const listItem = document.createElement('li');
         listItem.className = 'list-item';
         if (completed) listItem.classList.add('completed');
+        if (!animate) {
+            listItem.style.animation = 'none';
+        }
 
         const checkbox = document.createElement('input');
         checkbox.type = 'checkbox';
@@ -522,7 +635,8 @@ document.addEventListener('DOMContentLoaded', () => {
         checkbox.checked = completed;
         checkbox.addEventListener('change', () => {
             listItem.classList.toggle('completed', checkbox.checked);
-            saveList();
+            this.saveList();
+            this.showToast('Item updated', 'success');
         });
 
         const span = document.createElement('span');
@@ -533,40 +647,13 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Edit on double click
         span.addEventListener('dblclick', () => {
-            const input = document.createElement('input');
-            input.type = 'text';
-            input.value = span.textContent;
-            input.className = 'item-edit';
-            input.setAttribute('aria-label', 'Edit product');
-            input.addEventListener('blur', finishEdit);
-            input.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') finishEdit();
-            });
-            listItem.replaceChild(input, span);
-            input.focus();
-            
-            function finishEdit() {
-                const newText = input.value.trim();
-                const prevError = listItem.querySelector('.edit-error');
-                if (prevError) prevError.remove();
+            this.editItem(listItem, span);
+        });
 
-                if (newText && !isDuplicate(newText, listItem)) {
-                    span.textContent = newText;
-                    listItem.replaceChild(span, input);
-                    saveList();
-                } else if (isDuplicate(newText, listItem)) {
-                    let errorMsg = document.createElement('div');
-                    errorMsg.className = 'edit-error';
-                    errorMsg.textContent = 'Duplicate product';
-                    listItem.appendChild(errorMsg);
-                    input.focus();
-                    setTimeout(() => {
-                        if (errorMsg.parentNode) errorMsg.remove();
-                    }, 2000);
-                } else {
-                    listItem.replaceChild(span, input);
-                    saveList();
-                }
+        // Edit on Enter key when focused
+        span.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                this.editItem(listItem, span);
             }
         });
 
@@ -575,55 +662,195 @@ document.addEventListener('DOMContentLoaded', () => {
         deleteBtn.textContent = 'Delete';
         deleteBtn.setAttribute('aria-label', 'Delete product');
         deleteBtn.addEventListener('click', () => {
-            shoppingList.removeChild(listItem);
-            saveList();
+            this.deleteItem(listItem);
         });
 
         listItem.appendChild(checkbox);
         listItem.appendChild(span);
         listItem.appendChild(deleteBtn);
 
+        this.shoppingList.appendChild(listItem);
         return listItem;
     }
+    
+    // Edit an existing item
+    editItem(listItem, span) {
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.value = span.textContent;
+        input.className = 'item-edit';
+        input.setAttribute('aria-label', 'Edit product');
+        input.addEventListener('blur', () => this.finishEdit(listItem, span, input));
+        input.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') this.finishEdit(listItem, span, input);
+        });
+        
+        listItem.replaceChild(input, span);
+        input.focus();
+        input.select();
+    }
+    
+    // Finish editing an item
+    finishEdit(listItem, span, input) {
+        const newText = input.value.trim();
+        const prevError = listItem.querySelector('.edit-error');
+        if (prevError) prevError.remove();
 
-    function isDuplicate(text, excludeItem = null) {
-        return Array.from(shoppingList.querySelectorAll('.list-item')).some(li => {
-            if (li === excludeItem) return false;
-            return li.querySelector('.item-text').textContent.toLowerCase() === text.toLowerCase();
+        if (newText && !this.isDuplicate(newText, listItem)) {
+            span.textContent = newText;
+            listItem.replaceChild(span, input);
+            this.saveList();
+            this.showToast('Item updated', 'success');
+        } else if (this.isDuplicate(newText, listItem)) {
+            let errorMsg = document.createElement('div');
+            errorMsg.className = 'edit-error';
+            errorMsg.textContent = 'Duplicate product';
+            listItem.appendChild(errorMsg);
+            input.focus();
+            setTimeout(() => {
+                if (errorMsg.parentNode) errorMsg.remove();
+            }, 2000);
+        } else {
+            listItem.replaceChild(span, input);
+            this.saveList();
+        }
+    }
+    
+    // Delete an item with animation
+    deleteItem(listItem) {
+        listItem.classList.add('removing');
+        setTimeout(() => {
+            if (listItem.parentNode) {
+                this.shoppingList.removeChild(listItem);
+                this.saveList();
+                
+                if (this.shoppingList.children.length === 1) { // Only empty state remains
+                    this.emptyState.classList.remove('hidden');
+                }
+                
+                this.showToast('Item deleted', 'success');
+            }
+        }, 500);
+    }
+    
+    // Check for duplicate items
+    isDuplicate(text, excludeItem = null) {
+        return Array.from(this.shoppingList.querySelectorAll('.list-item')).some(li => {
+            if (li === excludeItem || li.classList.contains('removing')) return false;
+            const itemText = li.querySelector('.item-text');
+            return itemText && itemText.textContent.toLowerCase() === text.toLowerCase();
         });
     }
-
-    function addItem() {
-        const itemText = newItemInput.value.trim();
-        const feedbackMsg = document.getElementById('feedbackMsg');
-        feedbackMsg.textContent = '';
-        if (!itemText) return;
-        if (isDuplicate(itemText)) {
-            feedbackMsg.textContent = 'This product is already in the list.';
-            setTimeout(() => { feedbackMsg.textContent = ''; }, 2000);
+    
+    // Add a new item from the input
+    addItem() {
+        const itemText = this.newItemInput.value.trim();
+        this.feedbackMsg.textContent = '';
+        this.feedbackMsg.classList.remove('feedback-success');
+        
+        if (!itemText) {
+            this.feedbackMsg.textContent = 'Please enter a product name';
             return;
         }
-        shoppingList.appendChild(createListItem(itemText));
-        newItemInput.value = '';
-        newItemInput.focus();
-        saveList();
-    }
-
-    addBtn.addEventListener('click', addItem);
-    newItemInput.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') {
-            e.preventDefault();
-            addItem();
+        
+        if (this.isDuplicate(itemText)) {
+            this.feedbackMsg.textContent = 'This product is already in the list.';
+            return;
         }
-    });
-
-    // Initial load
-    if (!localStorage.getItem('shoppingList')) {
-        ['Bread', 'Milk', 'Eggs'].forEach(item => shoppingList.appendChild(createListItem(item)));
-        saveList();
-    } else {
-        loadList();
+        
+        this.addListItem(itemText, false);
+        this.newItemInput.value = '';
+        this.newItemInput.focus();
+        this.saveList();
+        this.feedbackMsg.textContent = 'Item added successfully!';
+        this.feedbackMsg.classList.add('feedback-success');
+        this.showToast('Item added', 'success');
+        
+        setTimeout(() => {
+            this.feedbackMsg.textContent = '';
+            this.feedbackMsg.classList.remove('feedback-success');
+        }, 2000);
     }
+    
+    // Clear all completed items
+    clearCompleted() {
+        const completedItems = this.shoppingList.querySelectorAll('.list-item.completed');
+        if (completedItems.length === 0) {
+            this.showToast('No completed items to clear', 'error');
+            return;
+        }
+        
+        if (!confirm(`Are you sure you want to remove ${completedItems.length} completed item(s)?`)) {
+            return;
+        }
+        
+        let removed = 0;
+        completedItems.forEach(item => {
+            if (!item.classList.contains('removing')) {
+                this.deleteItem(item);
+                removed++;
+            }
+        });
+        
+        setTimeout(() => {
+            this.showToast(`Removed ${removed} completed item(s)`, 'success');
+        }, 600);
+    }
+    
+    // Clear all items
+    clearAll() {
+        const allItems = this.shoppingList.querySelectorAll('.list-item:not(.removing)');
+        if (allItems.length === 0) {
+            this.showToast('The list is already empty', 'error');
+            return;
+        }
+        
+        if (!confirm(`Are you sure you want to remove all ${allItems.length} items?`)) {
+            return;
+        }
+        
+        let removed = 0;
+        allItems.forEach(item => {
+            if (!item.classList.contains('removing')) {
+                this.deleteItem(item);
+                removed++;
+            }
+        });
+        
+        setTimeout(() => {
+            this.showToast(`Removed all ${removed} items`, 'success');
+        }, 600);
+    }
+    
+    // Save shopping list to localStorage
+    saveList() {
+        const items = [];
+        this.shoppingList.querySelectorAll('.list-item:not(.removing)').forEach(li => {
+            const itemText = li.querySelector('.item-text');
+            if (itemText) {
+                items.push({
+                    text: itemText.textContent,
+                    completed: li.classList.contains('completed')
+                });
+            }
+        });
+        localStorage.setItem('shoppingList', JSON.stringify(items));
+    }
+    
+    // Show toast notification
+    showToast(message, type = 'success') {
+        this.toast.textContent = message;
+        this.toast.className = `toast ${type} show`;
+        
+        setTimeout(() => {
+            this.toast.classList.remove('show');
+        }, 3000);
+    }
+}
+
+// Initialize the application when DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+    new ShoppingListApp();
 });
 </script>
 </body>
