@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Shopping List - Álvaro</title>
+<title>Shopping List</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 <style>
     :root {
@@ -186,7 +186,7 @@
         box-shadow: 0 4px 20px rgba(99, 102, 241, 0.3);
     }
 
-    #addBtn, #homeBtn {
+    #addBtn, #resetBtn {
         padding: 1rem 1.5rem;
         border: none;
         border-radius: 12px;
@@ -204,14 +204,19 @@
         color: white;
     }
 
-    #homeBtn {
-        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    #resetBtn {
+        background: linear-gradient(135deg, #ef4444, #dc2626);
         color: white;
     }
 
-    #addBtn:hover, #homeBtn:hover {
+    #addBtn:hover {
         transform: translateY(-2px);
-        box-shadow: 0 8px 25px rgba(99, 102, 241, 0.4);
+        box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
+    }
+
+    #resetBtn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(239, 68, 68, 0.4);
     }
 
     .shopping-list {
@@ -342,7 +347,7 @@
         <div class="container">
             <div class="top-bar">
                 <h1>🛒 Shopping List</h1>
-                <button id="homeBtn">🏠 Home</button>
+                <button id="resetBtn">🟥 Reset all</button>
             </div>
             <div class="add-item">
                 <input type="text" id="newItem" placeholder="Add product..." maxlength="50" autocomplete="off" aria-label="Add product" />
@@ -474,11 +479,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const newItemInput = document.getElementById('newItem');
     const addBtn = document.getElementById('addBtn');
     const shoppingList = document.getElementById('shoppingList');
-    const homeBtn = document.getElementById('homeBtn');
+    const resetBtn = document.getElementById('resetBtn');
 
-    // Home button functionality
-    homeBtn.addEventListener('click', () => {
-        window.location.href = '../website/index.html';
+    // Reset button functionality
+    resetBtn.addEventListener('click', () => {
+        if (confirm('Are you sure you want to delete ALL your items? This action cannot be undone.')) {
+            localStorage.removeItem('shoppingList');
+            shoppingList.innerHTML = '';
+            // Optionally add default items back
+            ['Bread', 'Milk', 'Eggs'].forEach(item => shoppingList.appendChild(createListItem(item)));
+            saveList();
+        }
     });
 
     // Load shopping list from localStorage
