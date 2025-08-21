@@ -3,7 +3,7 @@
 ## 🇬🇧 English
 
 Welcome! 👋  
-A simple and elegant grocery shopping list web app built with HTML, CSS, and Vanilla JavaScript.
+This is a simple and elegant grocery shopping list web app built with HTML, CSS, and Vanilla JavaScript.
 It features local storage persistence, editable items, and an animated interactive particle background.
 
 
@@ -63,7 +63,8 @@ Vanilla JavaScript (DOM manipulation, localStorage, canvas animation)
 ## 🇪🇸 Español
 
 Bienvenido! 👋
-Una aplicación web simple y elegante de lista de compras hecha con HTML, CSS y JavaScript puro.
+
+Esto es una aplicación web simple y elegante de lista de compras hecha con HTML, CSS y JavaScript puro.
 Incluye persistencia con almacenamiento local, edición de ítems y un fondo animado interactivo con partículas.
 
 ✨ Características
