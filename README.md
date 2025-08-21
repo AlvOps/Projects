@@ -1,6 +1,6 @@
 # 🫑 Grocery Shopping / 🍅 Lista de la compra
 
-## 🇬🇧 English
+## 🇺🇸 English
 
 Welcome! 👋  
 This is a simple and elegant grocery shopping list web app built with HTML, CSS, and Vanilla JavaScript.
