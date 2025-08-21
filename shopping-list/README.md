@@ -41,11 +41,6 @@ Open index.html in your browser.
 
 Start adding products to your list.
 
-📂 Project Structure
-shopping-list/
-│
-├── index.html    # Main app with HTML, CSS, and JS
-└── README.md     # Documentation
 
 🔧 Usage
 
