@@ -4,6 +4,7 @@ Welcome! 👋
 This is a simple and elegant grocery shopping list web app built with HTML, CSS, and Vanilla JavaScript.
 It features local storage persistence, editable items, and an animated interactive particle background.
 
+**You can test it HERE: **https://alvops.github.io/grocery-shopping/shoppinglist.html**
 
 ✨ Features
 
