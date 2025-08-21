@@ -1,4 +1,4 @@
-# 🫑 Grocery Shopping / Lista de la compra
+# 🫑 Grocery Shopping / 🍅 Lista de la compra
 
 ## 🇬🇧 English
 
